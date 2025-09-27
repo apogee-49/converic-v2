@@ -1,0 +1,202 @@
+'use client';
+
+import * as React from 'react';
+import {
+  ColorArea as AriaColorArea,
+  type ColorAreaProps as AriaColorAreaProps,
+  ColorField as AriaColorField,
+  ColorPicker as AriaColorPicker,
+  ColorSlider as AriaColorSlider,
+  type ColorSliderProps as AriaColorSliderProps,
+  ColorSwatch as AriaColorSwatch,
+  ColorSwatchPicker as AriaColorSwatchPicker,
+  ColorSwatchPickerItem as AriaColorSwatchPickerItem,
+  type ColorSwatchPickerItemProps as AriaColorSwatchPickerItemProps,
+  type ColorSwatchPickerProps as AriaColorSwatchPickerProps,
+  type ColorSwatchProps as AriaColorSwatchProps,
+  ColorThumb as AriaColorThumb,
+  type ColorThumbProps as AriaColorThumbProps,
+  SliderTrack as AriaSliderTrack,
+  type SliderTrackProps as AriaSliderTrackProps,
+  ColorPickerStateContext,
+  composeRenderProps,
+  parseColor,
+} from 'react-aria-components';
+
+import { cn } from '@/lib/utils';
+
+const ColorField = AriaColorField;
+const ColorPicker = AriaColorPicker;
+
+function ColorSlider({ className, ...props }: AriaColorSliderProps) {
+  return (
+    <AriaColorSlider
+      className={composeRenderProps(className, (className) =>
+        cn('py-1', className),
+      )}
+      {...props}
+    />
+  );
+}
+
+function ColorArea({ className, ...props }: AriaColorAreaProps) {
+  return (
+    <AriaColorArea
+      className={composeRenderProps(className, (className) =>
+        cn('h-[232px] w-full rounded-lg', className),
+      )}
+      {...props}
+    />
+  );
+}
+
+function SliderTrack({ className, style, ...props }: AriaSliderTrackProps) {
+  return (
+    <AriaSliderTrack
+      className={composeRenderProps(className, (className) =>
+        cn('h-2 w-full rounded-full', className),
+      )}
+      style={({ defaultStyle }) => ({
+        ...style,
+        background: `${defaultStyle.background},
+          repeating-conic-gradient(
+            #fff 0 90deg,
+            rgba(0,0,0,.3) 0 180deg) 
+          0% -25%/6px 6px`,
+      })}
+      {...props}
+    />
+  );
+}
+
+function ColorThumb({ className, ...props }: AriaColorThumbProps) {
+  return (
+    <AriaColorThumb
+      className={composeRenderProps(className, (className) =>
+        cn('z-50 size-3 rounded-full ring-2 ring-white', className),
+      )}
+      {...props}
+    />
+  );
+}
+
+function ColorSwatchPicker({
+  className,
+  ...props
+}: AriaColorSwatchPickerProps) {
+  return (
+    <AriaColorSwatchPicker
+      className={composeRenderProps(className, (className) =>
+        cn('flex w-full flex-wrap gap-1', className),
+      )}
+      {...props}
+    />
+  );
+}
+
+function ColorSwatchPickerItem({
+  className,
+  ...props
+}: AriaColorSwatchPickerItemProps) {
+  return (
+    <AriaColorSwatchPickerItem
+      className={composeRenderProps(className, (className) =>
+        cn(
+          'group/swatch-item cursor-pointer p-1 focus:outline-none',
+          className,
+        ),
+      )}
+      {...props}
+    />
+  );
+}
+
+function ColorSwatch({ className, style, ...props }: AriaColorSwatchProps) {
+  return (
+    <AriaColorSwatch
+      className={composeRenderProps(className, (className) =>
+        cn(
+          'size-4 rounded-full group-data-[selected=true]/swatch-item:border-2 group-data-[selected=true]/swatch-item:border-white group-data-[selected=true]/swatch-item:ring-[1px] group-data-[selected=true]/swatch-item:ring-primary',
+          className,
+        ),
+      )}
+      style={({ defaultStyle }) => ({
+        ...style,
+        background: `${defaultStyle.background},
+        repeating-conic-gradient(
+          #fff 0 90deg,
+          rgba(0,0,0,.3) 0 180deg) 
+        0% -25%/6px 6px`,
+      })}
+      {...props}
+    />
+  );
+}
+
+type EyeDropperApi = {
+  open: () => Promise<{ sRGBHex: string }>;
+};
+
+type WindowWithEyeDropper = Window & {
+  EyeDropper?: new () => EyeDropperApi;
+};
+
+const EyeDropperButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ onClick, disabled, title, className, ...rest }, forwardedRef) => {
+  const state = React.useContext(ColorPickerStateContext)!;
+  const isSupported =
+    typeof window !== 'undefined' &&
+    Boolean((window as WindowWithEyeDropper).EyeDropper);
+
+  const effectiveDisabled = disabled ?? !isSupported;
+  const effectiveTitle = title ?? (!isSupported ? 'Pipette wird in diesem Browser nicht unterstützt' : undefined);
+
+  return (
+    <button
+      ref={forwardedRef}
+      type='button'
+      aria-label='Eye dropper'
+      disabled={effectiveDisabled}
+      aria-disabled={effectiveDisabled}
+      title={effectiveTitle}
+      className={cn(
+        'inline-flex h-8 items-center justify-center rounded-md border bg-background px-2 text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+        effectiveDisabled && 'cursor-not-allowed opacity-50',
+        className
+      )}
+      onClick={(event) => {
+        onClick?.(event);
+        if (event.defaultPrevented || !isSupported) {
+          return;
+        }
+
+        const EyeDropperCtor = (window as WindowWithEyeDropper).EyeDropper;
+        if (!EyeDropperCtor) {
+          return;
+        }
+
+        void new EyeDropperCtor()
+          .open()
+          .then((result) => state.setColor(parseColor(result.sRGBHex)))
+          .catch(() => undefined);
+      }}
+      {...rest}
+    />
+  );
+});
+EyeDropperButton.displayName = 'EyeDropperButton';
+
+export {
+  ColorPicker as Root,
+  ColorField as Field,
+  ColorArea as Area,
+  ColorSlider as Slider,
+  SliderTrack,
+  ColorThumb as Thumb,
+  ColorSwatchPicker as SwatchPicker,
+  ColorSwatchPickerItem as SwatchPickerItem,
+  ColorSwatch as Swatch,
+  EyeDropperButton,
+};

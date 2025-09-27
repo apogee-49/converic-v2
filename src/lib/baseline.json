@@ -1,0 +1,278 @@
+{
+  "header": {
+    "logo": "/logo.svg",
+    "tel": "0151 53570907",
+    "name": "Beratung vereinbaren"
+  },
+  "hero": {
+    "theme": "theme-1",
+    "overtitle": "Höhere Lead-Conversions",
+    "titel": "Maximieren Sie Ihre Conversions mit Multi-Step-Forms",
+    "inhalt": [
+      {
+        "stichpunkt" : "Steigern Sie Ihre Conversion-Rate mit Multi-Step-Formularen"
+      },
+      {
+        "stichpunkt" : "Strukturierte Leadverwaltung leicht gemacht"
+      },
+      {
+        "stichpunkt" : "Überzeugen Sie sich selbst von der Leistungsfähigkeit"
+      }
+    ],
+    "buttonText": "Jetzt zum Beispielform",
+    "pfeil": true,
+    "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/Hero-Image.png"
+  },
+  "jarvis": {
+    "titel": "Vielen Dank für Ihre Anfrage!",
+    "inhalt": "So geht es weiter:",
+    "buttonText": "Termin buchen",
+    "buttonUrl": "https://calendly.com/",
+    "elemente": [
+      {
+        "title": "Anfrage Eingang",
+        "beschreibung": "Wir haben Ihre Anfrage erhalten und bearbeiten diese schnellstmöglich."
+      },
+      {
+        "title": "Bestätigungsmail",
+        "beschreibung": "Als Bestätigung Ihrer Anfrage erhalten Sie eine Email mit den von Ihnen angegebenen Daten."
+      },
+      {
+        "title": "Telefonat",
+        "beschreibung": "Wir haben Ihre Anfrage bearbeitet und wenden uns dann telefonisch an Sie."
+      }
+    ]
+  },
+  "trust": {
+    "elemente": [
+      {
+        "icon": "badge-check",
+        "titel": "Regionale Fachfirmen",
+        "beschreibung": "Kompetent und seriös"
+      },
+      {
+        "icon": "thumbs-up",
+        "titel": "Unverbindlich & Kostenlos",
+        "beschreibung": "Risikofrei anfragen"
+      },
+      {
+        "icon": "star",
+        "titel": "4,7 / 5 Sterne Bewertung",
+        "beschreibung": "Auf Google"
+      },
+      {
+        "icon": "shield",
+        "titel": "Sicher & privat",
+        "beschreibung": "SSL-verschlüsselt"
+      }
+    ]
+  },
+  "steps": {
+    "theme": "theme-1",
+    "overtitle": "So funktioniert es!",
+    "titel": "Ihr Fahrplan zu mehr Leads",
+    "elemente": [
+      {
+        "icon": "pencil-ruler",
+        "title": "Leitfaden für die Inhalte",
+        "beschreibung": "Suchen Sie sich Sections auf dieser Seite aus die Ihnen gefallen und erstellen Sie einen groben Leitfaden für die Texte und die Fragen des Multi-Step-Formulars."
+      },
+      {
+        "icon": "square-mouse-pointer",
+        "title": "Umsetzung der Landingpage",
+        "beschreibung": "Anhand diser Informationen erstellen wir eine auf Ihr Unternehmen personalisierte Landingpage und verbinden das Multi-Step-Formular mit Ihrer E-Mail-Adresse."        
+      },
+      {
+        "icon": "chart-column-increasing",
+        "title": "Entspannt zurücklehnen",
+        "beschreibung": "Nach der Veröffentlichung der Landingpage können Sie sich zurücklehnen und die Ergebnisse des Multi-Step-Formulars beobachten und analysieren."
+      }
+    ]
+  },
+  "benefits": {
+    "titel": "Anwendungsbereiche",
+    "inhalt": "Klassische Landingpages sind oft langsam, nicht interaktiv oder mobil-optimiert, obwohl 98% Ihrer Zielgruppe Social Media am Handy nutzt. Durch uns erzielen Sie mehr Termine, Mitarbeiter und Leads.",
+    "buttonText": "Zurück zum Beispielform",
+    "elemente": [
+      {
+        "icon": "file-badge",
+        "caption": "Mehr qualifizierte Kundenanfragen",
+        "beschreibung": "Verlinken Sie unsere Landingpage-Funnels einfach in Ihrer Hauptwebsite und verwandeln Sie mit hoher Conversion-Rate Besucher in qualifizierte Kundenanfragen."
+      },
+      {
+        "icon": "calendar-days",
+        "caption": "Automatisierte Terminbuchungen",
+        "beschreibung": "Unsere Funnels qualifizieren durch gezielte Fragen Ihre Zielgruppe, welche nach ausfüllen des Formulars einfach einen verfügbaren Termin für ein Beratungsgespräch bei Ihnen buchen kann."
+      },
+      {
+        "icon": "file-user",
+        "caption": "Leichtere Mitarbeitergewinnung",
+        "beschreibung": "Durch den Einsatz smarter Funnels können Bewerber sich in weniger als 2 Minutes unkompliziert bei Ihnen bewerben. Das Ergebnis? Qualifizierte Bewerberanfragen auf Knopfdruck."
+      },
+      {
+        "icon": "mail-plus",
+        "caption": "Aufbauen von E-Mail-Listen",
+        "beschreibung": "Anstatt Interessenten um einen Termin zu bitten, bieten Sie erstmal Mehrwert in Form von Freebies oder Fallstudien an. So generieren Sie günstig Kontakte und bauen eine E-Mail-Liste auf."
+      }
+    ]
+  },
+  "about": {
+    "overtitle": "Mehr über uns",
+    "titel": "Wirb effektiver im mobilen Zeitalter & starte heute",
+    "inhalt": "Trennen Sie die Spreu vom Weizen: Sortieren Sie schlechte Leads mit bedingten Logiken und E-Mail-Validierung heraus, bevor das Formular abgeschickt wird. So kommen bei Ihnen garantiert die besten Leads an.",
+    "buttonText": "Zum Beispielform",
+    "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/Hero-Image.png",
+    "reversed": false,
+    "elemente": [
+      {
+        "icon": "badge-check",
+        "name": "Erfolgreiche Vorlagen: ",
+        "beschreibung": "Unsere UI Components wurden bereits erfolgreich in dutzenden Landingpages getestet."
+      },
+      {
+        "icon": "badge-check",
+        "name": "Personalisierung: ",
+        "beschreibung": "Leiten Sie Interessenten auf individuelle Pfade, je nach Klick, um besser sotieren zu können."
+      }
+    ]
+  },
+  "testimonials": {
+    "theme": "theme-2",
+    "overtitle": "Kundestimmen",
+    "titel": "Was unsere Kunden sagen",
+    "sterneAnzeigen": true,
+    "elemente": [
+      {
+        "name": "Lena Müller",
+        "rolle": "Marketing Manager",
+        "beschreibung": "Die Implementierung der Multi-Step-Formulare hat unsere Lead-Conversion-Rate erheblich gesteigert.",
+        "highlight": "Wir sehen eine 40%ige Steigerung bei qualifizierten Anfragen.",
+        "conclusion": "Ein Muss für jedes Unternehmen."
+      },
+      {
+        "name": "Thomas Schmidt",
+        "rolle": "Verkaufsleiter",
+        "beschreibung": "Dank der benutzerfreundlichen Landingpages konnten wir unsere Kundenanfragen verdoppeln.",
+        "highlight": "Die Automatisierung der Terminbuchungen spart uns wertvolle Zeit.",
+        "conclusion": "Absolut empfehlenswert!"
+      },
+      {
+        "name": "Julia Fischer",
+        "rolle": "Sales Director",
+        "beschreibung": "Die neuen Formulare sind nicht nur effizient, sondern auch intuitiv.",
+        "highlight": "Unsere Kunden schätzen die einfache Bedienung und die klaren Anweisungen.",
+        "conclusion": "Ein echter Gewinn für unseren Kundenservice."
+      },
+      {
+        "name": "Markus Weber",
+        "rolle": "CMO",
+        "beschreibung": "Als Startup müssen wir schnell und effizient arbeiten. Die Formulare haben unsere Prozesse erheblich beschleunigt.",
+        "highlight": "Unsere Conversion-Rate hat sich um 30% verbessert.",
+        "conclusion": ""
+      },
+      {
+        "name": "Anna Becker",
+        "rolle": "Produktmanagerin",
+        "beschreibung": "Die Integration der Multi-Step-Formulare hat die Benutzererfahrung auf unserer Website erheblich verbessert.",
+        "highlight": "Die Kundenbindung ist jetzt stärker als je zuvor.",
+        "conclusion": "Eine großartige Lösung für jedes Unternehmen."
+      }
+    ]
+  },
+  "cta": {
+    "overtitle": "Erreichbar Mo-Fr: 9 - 19 Uhr",
+    "titel": "Sprechen Sie jetzt mit dem Entwickler der Seite",
+    "buttonText": "Jetzt Anrufen",
+    "buttonUrl": "tel:0151 53570908",
+    "bild": "/profile.jpeg"
+  },
+  "images": {
+    "titel": "Eine Auswahl installierter PV-Anlagen",
+    "beschreibung": "Entdecken Sie unsere erfolgreich installierten PV-Anlagen und sehen Sie selbst, wie unsere Kunden bereits von nachhaltiger Solarenergie profitieren. Jede Anlage ist ein Beweis für unsere Expertise und unseren Anspruch, höchste Qualität zu liefern.",
+    "elemente": [
+      {
+        "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/home1.webp",
+        "titel": "12,18 kWp",
+        "location": "Mannheim",
+        "module": "28 Module"
+      },
+      {
+        "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/home2.webp",
+        "titel": "4,12 kWp + E-Ladestation",
+        "location": "Karlsruhe",
+        "module": "32 Module"
+      },
+      {
+        "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/home3.webp",
+        "titel": "10,4 kWp + E-Ladestation",
+        "location": "Neustadt",
+        "module": "24 Module"
+      },
+      {
+        "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/home4.webp",
+        "titel": "12,32 kWp",
+        "location": "Karlsruhe",
+        "module": "32 Module"
+      },
+      {
+        "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/home5.webp",
+        "titel": "13,5 kWp",
+        "location": "Ladenburg",
+        "module": "30 Module"
+      },
+      {
+        "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/home6.webp",
+        "titel": "9,8 kWp",
+        "location": "Hockenheim",
+        "module": "22 Module"
+      }
+    ]
+  },
+  "faq": {
+    "overtitle": "FAQ",
+    "titel": "Ihre Fragen, unsere Antworten",
+    "buttonText": "Zurück zum Beispielform",
+    "elemente": [
+      {
+        "frage": "Welche Arten von Formularfeldern gibt es?",
+        "antwort": "Wir bieten Auswahlbuttons, Textfelder, Zahlenfelder, formatierte Währungsbeträge, Checkboxen, Datei-Uploads, Datumsfelder, E-Mail- und Telefonnummernfelder sowie viele weitere Optionen an."
+      },
+      {
+        "frage": "Welche Funktionen bietet mir das Formular?",
+        "antwort": "Das Formular bietet individuelle Pfade sowie einfach zugängliche Erklärungen zu jedem Eingabefeld an. Darüber hinaus erhalten Kunden eine Bestätigungs-E-Mail und Feedback auf einer Dankeseite. Außerdem können benutzerdefinierte Fehlermeldungen und hilfreiche Hinweise integriert werden, um alles in allem die beste User Experience (UX) zu gewährleisten."
+      },
+      {
+        "frage": "Wie lange dauert die Umsetzung einer solchen Landingpage?",
+        "antwort": "Nach erhalt und Besprechung der Inhalte, dauert die Umsetzung je nach Menge der personalisierten Änderungen und Komplexität des Multistep-Formulars nur 1-2 Tage."
+      },
+      {
+        "frage": "Wird die Seite weiterentwickelt, und kann ich Ideen einbringen?",
+        "antwort": "Unbedingt, ja. Wir arbeiten dauerhaft daran die Software besser zu machen, bestehende Features zu erweitern und neue Features zu entwickeln. Wir lieben Feedback, denn wir wollen dieses Konzept immer im Sinne unserer Kunden weiterentwickeln."
+      },
+      {
+        "frage": "Kann man im Nachhinein noch Änderungen vornehmen?",
+        "antwort": "Natürlich. Jegliche Änderungen, egal ob an den Texten, neuen Abschnitten oder am Aufbau des Formulars, sind jeder Zeit möglich."
+      }
+    ]
+  },
+  "partners": {
+    "titel": "Unsere Partner",
+    "logos": [
+      { "src": "/partner1.svg", "alt": "Partner 1" },
+      { "src": "/partner2.svg", "alt": "Partner 2" },
+      { "src": "/partner3.svg", "alt": "Partner 3" }
+    ]
+  },
+  
+  "_order": [
+    "header",
+    "hero",
+    "jarvis",
+    "steps",
+    "benefits",
+    "about",
+    "testimonials",
+    "cta",
+    "faq"
+  ]
+}
