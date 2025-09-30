@@ -8,6 +8,7 @@
     "theme": "theme-1",
     "overtitle": "Höhere Lead-Conversions",
     "titel": "Maximieren Sie Ihre Conversions mit Multi-Step-Forms",
+    "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/Hero-Image.png",
     "inhalt": [
       {
         "stichpunkt" : "Steigern Sie Ihre Conversion-Rate mit Multi-Step-Formularen"
@@ -20,8 +21,7 @@
       }
     ],
     "buttonText": "Jetzt zum Beispielform",
-    "pfeil": true,
-    "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/Hero-Image.png"
+    "pfeil": true
   },
   "jarvis": {
     "titel": "Vielen Dank für Ihre Anfrage!",

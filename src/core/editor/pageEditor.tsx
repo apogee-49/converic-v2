@@ -44,7 +44,7 @@ export default function PageEditor({ pageId }: Props) {
   
   async function handleSectionUpdate(section: Section, action: 'add' | 'save' | 'delete') {
     const content: Record<string, unknown> = { ...(section.properties ?? {}) };
-    delete content["sectionId"];
+    delete content.sectionId;
     const targetId: Id<'pageSections'> | undefined = section.id as Id<'pageSections'> | undefined;
 
     switch (action) {

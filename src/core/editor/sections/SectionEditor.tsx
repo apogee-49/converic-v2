@@ -3,7 +3,7 @@ import type { SectionEditorProps } from './types';
 import { PropertyInput } from './PropertyInput';
 import { Button } from "@/components/ui/button";
 import { PencilIcon, ArrowRight, Trash2Icon, Loader2 } from 'lucide-react';
-import { getSectionName } from '@/lib/utils';
+import { getSectionName, sortObjectByBaseline } from '@/lib/utils';
 
 const SectionEditorEmptyState = () => (
   <div className="p-2 flex items-center justify-center h-full text-sm text-muted-foreground">
@@ -58,17 +58,19 @@ const EditorHeader = ({
 
 const EditorContent = ({ 
   properties, 
-  sectionId, 
+  sectionId,
+  sectionType, 
   onChange 
 }: { 
   properties: Record<string, any>;
   sectionId: string;
+  sectionType: string;
   onChange: (key: string, value: any, path: string[]) => void;
 }) => (
   <div className="flex-1 relative">
     <div className="absolute inset-0 overflow-y-auto p-3">
       <div className="space-y-3">
-        {Object.entries(properties)
+        {Object.entries(sortObjectByBaseline(properties, sectionType))
           .filter(([key]) => key !== "sectionId")
           .map(([key, value]) => (
             <PropertyInput
@@ -111,27 +113,22 @@ export const SectionEditor: React.FC<SectionEditorProps> = ({
 
 
   const updateProperties = (key: string, value: any, path: string[] = []) => {
-    setProperties((prevProps: Record<string, any>) => {
-      const newProperties: Record<string, any> = structuredClone(prevProps);
-
-      const setAtPath = (root: any, pathKeys: string[], propKey: string, propValue: any) => {
-        let current = root;
-        pathKeys.forEach((key, index) => {
-          const isLastKey = index === pathKeys.length - 1;
-          const keyIndex = Number.isInteger(Number(key)) ? Number(key) : key;
-
-          if (isLastKey) {
-            current[keyIndex] = propValue;
-          } else {
-            if (!(keyIndex in current)) {
-              current[keyIndex] = typeof pathKeys[index + 1] === 'number' ? [] : {};
-            }
-            current = current[keyIndex];
-          }
-        });
-      };
-
-      setAtPath(newProperties, path, key, value);
+    setProperties((prevProps) => {
+      const newProperties = structuredClone(prevProps);
+      
+      let current = newProperties;
+      for (let i = 0; i < path.length; i++) {
+        const currentKey = String(path[i]);
+        
+        if (!(currentKey in current) || current[currentKey] == null) {
+          const nextKey = path[i + 1];
+          current[currentKey] = /^\d+$/.test(String(nextKey)) ? [] : {};
+        }
+        
+        current = current[currentKey];
+      }
+      
+      current[key] = value;
       return newProperties;
     });
   };
@@ -174,6 +171,7 @@ export const SectionEditor: React.FC<SectionEditorProps> = ({
       <EditorContent
         properties={properties}
         sectionId={activeItem.id ?? `${activeItem.type}-${activeItem.position ?? ''}`}
+        sectionType={activeItem.type}
         onChange={updateProperties}
       />
     </div>

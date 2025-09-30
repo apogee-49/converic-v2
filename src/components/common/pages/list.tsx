@@ -65,7 +65,7 @@ export default function PagesList({ onSelect }: PagesListProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[180px]" onClick={(e) => e.stopPropagation()}>
         <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onSelect(p._id) }}>
-          <PencilIcon className="mr-2 h-4 w-4" />
+          <PencilIcon className="mr-2 h-4 w-4 " />
           Bearbeiten
         </DropdownMenuItem>
         <DropdownMenuItem onClick={(e) => { e.stopPropagation(); void copyLink(p.slug) }}>
