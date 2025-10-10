@@ -59,6 +59,9 @@
     "@tiptap/react": "^3.5.3",
     "@tiptap/starter-kit": "^3.5.3",
     "@tiptap/suggestion": "^3.5.3",
+    "@upstash/ratelimit": "^2.0.6",
+    "@upstash/redis": "^1.35.5",
+    "@vercel/sdk": "^1.13.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -80,6 +83,8 @@
     "tailwind-merge": "^3.3.1",
     "tailwind-variants": "^3.1.1",
     "tippy.js": "^6.3.7",
+    "tldts": "^7.0.16",
+    "tr46": "^6.0.0",
     "usehooks-ts": "^3.1.1",
     "vaul": "^1.1.2",
     "zod": "^3.25.76"

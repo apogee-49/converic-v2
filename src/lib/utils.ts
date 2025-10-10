@@ -3,6 +3,8 @@ import { twMerge } from "tailwind-merge"
 import baseline from './baseline.json'
 import { sectionCategories, UPLOAD_CONFIG } from './config'
 import { createTV } from "tailwind-variants"
+import { parse } from "tldts"
+import { toASCII } from "tr46"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -92,7 +94,7 @@ export function filterPagesByQuery<T extends { title?: string; slug?: string }>(
   return pages.filter((p) => {
     const title = (p.title ?? '').toLowerCase();
     const slug = (p.slug ?? '').toLowerCase();
-    return title.includes(q) || slug.includes(q);
+    return title.includes(q) ?? slug.includes(q);
   });
 }
 
@@ -122,3 +124,21 @@ export const uploadHelpers = {
     return `${timestamp}_${fileName}`;
   },
 } as const;
+
+
+const sanitizeDomain = (raw: string): string =>
+  raw.trim().toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/\/.*$/, "")
+    .replace(/:\d+$/, "")
+    .replace(/\.$/, "");
+
+    
+export const normalizeDomain = (raw: string): { domain: string; apex: string; sub: string } | null => {
+  const cleaned = sanitizeDomain(raw);
+  if (!cleaned) return null;
+  const ascii = toASCII(cleaned, { useStd3ASCIIRules: true, checkBidi: true, checkHyphens: true, checkJoiners: true, processingOption: "nontransitional", verifyDNSLength: true });
+  const p = parse(ascii, { detectIp: true });
+  if (!p.isIcann || !p.domain || p.isIp) return null;
+  return { domain: ascii, apex: p.domain, sub: p.subdomain ?? "" };
+}
