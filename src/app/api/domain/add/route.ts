@@ -2,30 +2,14 @@ import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { Vercel } from '@vercel/sdk';
 import { Redis } from '@upstash/redis';
-import { ConvexHttpClient } from 'convex/browser';
-import { api } from '@/../convex/_generated/api';
 import { tryCatch } from '@/lib/tryCatch';
 import { normalizeDomain } from '@/lib/utils';
 import { env } from '@/env';
 
 
-const VERCEL_DNS_CNAME = '8bfbfd0adfe9edc0.vercel-dns-017.com.';
-const VERCEL_A_RECORD = '216.198.79.1';
+interface VercelConfig { ok: true }
 
-interface DnsRecord {
-  type: 'A' | 'CNAME';
-  name: string;
-  value: string;
-}
-
-interface VercelConfig {
-  verified: boolean;
-  configData?: {
-    misconfigured?: boolean;
-  };
-}
-
-function parsePayload(input: object): { slug: string; domain: string; sub: string } | null {
+function parsePayload(input: object): { slug: string; domain: string } | null {
   const obj = input as { slug?: string; domain?: string };
 
   const slug = obj.slug?.trim() ?? '';
@@ -34,29 +18,15 @@ function parsePayload(input: object): { slug: string; domain: string; sub: strin
   if (!obj.slug || !obj.domain) return null;
 
   const normalized = normalizeDomain(domain);
-  return normalized ? { slug, domain: normalized.domain, sub: normalized.sub } : null;
-}
- 
-
-function getDnsRecords(sub: string, configData?: VercelConfig['configData']): DnsRecord[] {
-  if (configData?.misconfigured) {
-    if (sub) {
-      return [
-        { type: 'CNAME', name: sub, value: VERCEL_DNS_CNAME }
-      ];
-    } else {
-      return [
-        { type: 'A', name: '@', value: VERCEL_A_RECORD },
-        { type: 'CNAME', name: 'www', value: VERCEL_DNS_CNAME }
-      ];
-    }
-  }
-  return [];
+  return normalized ? { slug, domain: normalized.domain } : null;
 }
 
 
 // Upstash KV (domain → slug)
-const redis = Redis.fromEnv();
+const redis = new Redis({
+  url: env.DOMAIN_KV_REST_API_URL,
+  token: env.DOMAIN_KV_REST_API_TOKEN,
+})
 
 async function kvSet(domain: string, slug: string): Promise<boolean> {
   const key = `domain:${domain}`;
@@ -65,44 +35,24 @@ async function kvSet(domain: string, slug: string): Promise<boolean> {
 }
 
 
-// Convex
-const convexClient = new ConvexHttpClient(env.NEXT_PUBLIC_CONVEX_URL);
-
-async function updateConvexDomain(slug: string, domain: string): Promise<void> {
-  const page = await convexClient.query(api.landingPages.getLandingPage, { slug });
-  
-  if (!page?.landingPage) throw new Error('Landing page not found');
-  
-  await convexClient.mutation(api.landingPages.update, {
-    landingPageId: page.landingPage._id,
-    customDomain: domain,
-  });
-}
-
-
 // Vercel
 const vercel = new Vercel({ bearerToken: env.VERCEL_TOKEN });
+const teamParams: undefined | { teamId: string } = env.VERCEL_TEAM_ID
+  ? { teamId: env.VERCEL_TEAM_ID }
+  : undefined;
 
 async function addDomainToVercel(domain: string): Promise<VercelConfig> {
   try {
     await vercel.projects.addProjectDomain({
       idOrName: env.VERCEL_PROJECT_ID,
       requestBody: { name: domain },
+      ...(teamParams ? { teamId: teamParams.teamId } : {}),
     });
   } catch (e: any) {
-     console.error(
-          e instanceof Error ? `Error: ${e.message}` : String(e),
-     );
+    console.warn('addProjectDomain warning:', e?.message ?? String(e));
   }
 
-  const { data: configData } = await tryCatch(
-    vercel.domains.getDomainConfig({ domain })
-  );
-  
-  return {
-    verified: configData ? !configData.misconfigured : false,
-    configData: configData ?? undefined
-  };
+  return { ok: true };
 }
 
 
@@ -119,10 +69,10 @@ export async function POST(req: Request) {
     );
   }
 
-  const { slug, domain, sub } = parsed;
+  const { slug, domain } = parsed;
 
   // Add to Vercel
-  const { data: vercelResult, error: vercelError } = await tryCatch(addDomainToVercel(domain));
+  const { error: vercelError } = await tryCatch(addDomainToVercel(domain));
   
   if (vercelError) {
     return NextResponse.json(
@@ -141,27 +91,15 @@ export async function POST(req: Request) {
     );
   }
 
-  // Update Convex
-  const { error: convexError } = await tryCatch(updateConvexDomain(slug, domain));
-  if (convexError) {
-    return NextResponse.json(
-      { error: { code: 'CONVEX_ERROR', message: convexError.message } },
-      { status: 500 }
-    );
-  }
-
   // Revalidate & return success
   revalidatePath(`/${slug}`);
 
-  const verified = vercelResult?.verified ?? false;
   return NextResponse.json(
     {
       ok: true,
       slug,
       domain,
-      verified,
-      dnsRecords: getDnsRecords(sub, vercelResult?.configData),
     },
-    { status: verified ? 201 : 202 }
+    { status: 201 }
   );
 }

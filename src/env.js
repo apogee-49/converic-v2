@@ -12,7 +12,7 @@ export const env = createEnv({
     DOMAIN_KV_REST_API_READ_ONLY_TOKEN: z.string(),
     VERCEL_TOKEN: z.string(),
     VERCEL_PROJECT_ID: z.string(),
-    VERCEL_TEAM_ID: z.string().optional(),
+    VERCEL_TEAM_ID: z.string(),
   },
 
 
@@ -36,7 +36,7 @@ export const env = createEnv({
     DOMAIN_KV_REST_API_READ_ONLY_TOKEN: process.env.DOMAIN_KV_REST_API_READ_ONLY_TOKEN,
     VERCEL_TOKEN: process.env.VERCEL_TOKEN,
     VERCEL_PROJECT_ID: process.env.VERCEL_PROJECT_ID,
-    VERCEL_TEAM_ID: process.env.VERCEL_TEAM_ID || undefined,
+    VERCEL_TEAM_ID: process.env.VERCEL_TEAM_ID,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CopyIcon } from 'lucide-react';
+import { CopyIcon, CheckIcon } from 'lucide-react';
 
 interface DNSRecord {
   type: string;
@@ -13,9 +14,22 @@ interface DNSRecordsTableProps {
 }
 
 export function DNSRecordsTable({ records, onCopy }: DNSRecordsTableProps) {
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!copiedKey) return;
+    const t = setTimeout(() => setCopiedKey(null), 1200);
+    return () => clearTimeout(t);
+  }, [copiedKey]);
+
+  const handleCopy = (key: string, value: string) => {
+    onCopy(value);
+    setCopiedKey(key);
+  };
+
   return (
-    <div className="rounded-md border mt-4">
-      <table className="w-full">
+    <div className="rounded-md border overflow-hidden">
+      <table className="w-full ">
         <thead>
           <tr className="border-b bg-muted">
             <th className="px-4 py-2 text-left text-sm font-medium">Type</th>
@@ -34,10 +48,15 @@ export function DNSRecordsTable({ records, onCopy }: DNSRecordsTableProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => onCopy(rec.name)}
-                    className="h-6 w-6"
+                    onClick={() => handleCopy(`name-${i}`, rec.name)}
+                    className="h-6 w-6 relative overflow-hidden"
                   >
-                    <CopyIcon className="h-3 w-3" />
+                    <span className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ${copiedKey === `name-${i}` ? 'opacity-0 blur-[2px]' : 'opacity-100 blur-0'}`}>
+                      <CopyIcon className="h-3 w-3" />
+                    </span>
+                    <span className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ${copiedKey === `name-${i}` ? 'opacity-100 blur-0' : 'opacity-0 blur-[2px]'}`}>
+                      <CheckIcon className="h-3 w-3" />
+                    </span>
                   </Button>
                 </div>
               </td>
@@ -47,10 +66,15 @@ export function DNSRecordsTable({ records, onCopy }: DNSRecordsTableProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => onCopy(rec.value)}
-                    className="h-6 w-6"
+                    onClick={() => handleCopy(`value-${i}`, rec.value)}
+                    className="h-6 w-6 relative overflow-hidden"
                   >
-                    <CopyIcon className="h-3 w-3" />
+                    <span className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ${copiedKey === `value-${i}` ? 'opacity-0 blur-[2px]' : 'opacity-100 blur-0'}`}>
+                      <CopyIcon className="h-3 w-3" />
+                    </span>
+                    <span className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ${copiedKey === `value-${i}` ? 'opacity-100 blur-0' : 'opacity-0 blur-[2px]'}`}>
+                      <CheckIcon className="h-3 w-3" />
+                    </span>
                   </Button>
                 </div>
               </td>
