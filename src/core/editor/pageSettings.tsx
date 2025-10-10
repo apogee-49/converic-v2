@@ -43,10 +43,9 @@ export default function PageSettings(props: Props) {
   const [dnsRecords, setDnsRecords] = useState<Array<DNSRecord>>([])
   const [domainStatus, setDomainStatus] = useState<"verified" | "unverified" | "unknown">("unknown")
 
-  const customDomain = useMemo(() => {
-    return typeof page?.customDomain === "string" && page.customDomain.trim().length > 0
-      ? page.customDomain
-      : null
+  const customDomain = useMemo<string | null>(() => {
+    const value = (typeof page?.customDomain === "string" ? page.customDomain : "").trim()
+    return value.length > 0 ? value : null
   }, [page])
 
   useEffect(() => {
@@ -74,7 +73,7 @@ export default function PageSettings(props: Props) {
         if (!cancelled) setIsCheckingStatus(false)
       }
     }
-    run()
+    void run()
     return () => {
       cancelled = true
     }
