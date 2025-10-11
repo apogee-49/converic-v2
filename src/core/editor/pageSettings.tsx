@@ -19,7 +19,8 @@ export default function PageSettings(props: Props) {
   const [inputDomain, setInputDomain] = useState<string>("")
 
   const customDomain = useMemo<string | null>(() => {
-    const value = (typeof page?.customDomain === "string" ? page.customDomain : "").trim()
+    const raw: string = String(page?.customDomain ?? "")
+    const value = raw.trim()
     return value.length > 0 ? value : null
   }, [page])
 
@@ -28,7 +29,9 @@ export default function PageSettings(props: Props) {
     domainStatus,
     isCheckingStatus,
     isSavingDomain,
+    isDeletingDomain,
     saveDomain,
+    deleteDomain,
     getDomainStatus,
     errorMessage,
   } = useDomainService({ pageId: props.pageId, slug: page?.slug ?? null, customDomain });
@@ -45,15 +48,17 @@ export default function PageSettings(props: Props) {
         domainStatus={domainStatus}
         isCheckingStatus={isCheckingStatus}
         isSavingDomain={isSavingDomain}
+        isDeletingDomain={isDeletingDomain}
         dnsRecords={dnsRecords}
         errorMessage={errorMessage}
         inputDomain={inputDomain}
         setInputDomain={setInputDomain}
-        onRefresh={() => { void getDomainStatus() }}
+        onRefresh={() => { void getDomainStatus({ force: true }) }}
         onSave={async (domain) => {
           const response = await saveDomain(domain)
           if ("ok" in response && response.ok) setInputDomain("")
         }}
+        onDelete={async (domain) => { await deleteDomain(domain) }}
         onCopy={handleCopy}
       />
     </div>

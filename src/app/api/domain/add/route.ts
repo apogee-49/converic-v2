@@ -91,7 +91,6 @@ export async function POST(req: Request) {
     );
   }
 
-  // Revalidate & return success
   revalidatePath(`/${slug}`);
 
   return NextResponse.json(

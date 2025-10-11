@@ -16,12 +16,14 @@ interface DomainSectionProps {
   domainStatus: "verified" | "unverified"
   isCheckingStatus: boolean
   isSavingDomain: boolean
+  isDeletingDomain: boolean
   dnsRecords: Array<{ type: string; name: string; value: string }>
   errorMessage: string | null
   inputDomain: string
   setInputDomain: (value: string) => void
   onRefresh: () => void
   onSave: (domain: string) => Promise<void>
+  onDelete: (domain: string) => Promise<void>
   onCopy: (value: string) => void
 }
 
@@ -32,12 +34,14 @@ export function DomainSection(props: DomainSectionProps) {
     domainStatus,
     isCheckingStatus,
     isSavingDomain,
+    isDeletingDomain,
     dnsRecords,
     errorMessage,
     inputDomain,
     setInputDomain,
     onRefresh,
     onSave,
+    onDelete,
     onCopy,
   } = props
 
@@ -102,6 +106,16 @@ export function DomainSection(props: DomainSectionProps) {
                           <RefreshCcw className="h-4 w-4" />
                         )}
                         {isCheckingStatus ? "Aktualisieren" : "Aktualisieren"}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={async () => { if (customDomain) { await onDelete(customDomain) } }}
+                        disabled={isDeletingDomain}
+                        className="h-8 gap-2"
+                      >
+                        {isDeletingDomain && <Loader className="h-4 w-4 animate-spin" />}
+                        {isDeletingDomain ? "Entfernen" : "Entfernen"}
                       </Button>
                     </div>
                   </div>

@@ -4,25 +4,13 @@ import { tryCatch } from '@/lib/tryCatch'
 import { normalizeDomain } from '@/lib/utils'
 import { env } from '@/env'
 
-const VERCEL_DNS_CNAME = '8bfbfd0adfe9edc0.vercel-dns-017.com.'
-const VERCEL_A_RECORD = '216.198.79.1'
-
 interface DnsRecord {
-  type: 'A' | 'CNAME'
+  type: string
   name: string
   value: string
 }
 
 const vercel = new Vercel({ bearerToken: env.VERCEL_TOKEN })
-
-function suggestDnsRecords(sub: string, misconfigured?: boolean): Array<DnsRecord> {
-  if (!misconfigured) return []
-  if (sub) return [{ type: 'CNAME', name: sub, value: VERCEL_DNS_CNAME }]
-  return [
-    { type: 'A', name: '@', value: VERCEL_A_RECORD },
-    { type: 'CNAME', name: 'www', value: VERCEL_DNS_CNAME },
-  ]
-}
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -36,28 +24,63 @@ export async function GET(req: Request) {
     )
   }
 
-  const { domain, sub } = normalized
+  const { domain } = normalized
 
-  const { data: configData, error } = await tryCatch(
-    vercel.domains.getDomainConfig({ domain, teamId: env.VERCEL_TEAM_ID }),
+  const { data: projectDomain, error } = await tryCatch(
+    vercel.projects.getProjectDomain({
+      idOrName: env.VERCEL_PROJECT_ID,
+      domain,
+      teamId: env.VERCEL_TEAM_ID,
+    }),
   )
   if (error) {
     return NextResponse.json(
-      { error: { code: 'VERCEL_ERROR', message: (error as Error).message } },
+      { error: { code: 'VERCEL_ERROR', message: error.message } },
       { status: 502 },
     )
   }
 
-  const isMisconfigured = Boolean(configData?.misconfigured);
-  const isVerified = !isMisconfigured;
+  const { data: configData, error: configError } = await tryCatch(
+    vercel.domains.getDomainConfig({
+      domain,
+      teamId: env.VERCEL_TEAM_ID,
+      projectIdOrName: env.VERCEL_PROJECT_ID,
+    }),
+  )
+  if (configError) {
+    return NextResponse.json(
+      { error: { code: 'VERCEL_ERROR', message: configError.message } },
+      { status: 502 },
+    )
+  }
+
+  const isConfigured = Boolean(configData && configData.misconfigured === false)
+
+  const dnsRecords: Array<DnsRecord> = []
+
+  // Ownership-Verifikation
+  if (!projectDomain?.verified && Array.isArray(projectDomain?.verification) && projectDomain.verification.length > 0) {
+    for (const v of projectDomain.verification) {
+      dnsRecords.push({ type: v.type ?? '', name: v.domain, value: v.value })
+    }
+  }
+
+  // DNS Empfehlungen
+  if (!isConfigured && configData) {
+    const sub = normalized.sub
+    const topIPv4 = (configData.recommendedIPv4 ?? []).sort((a, b) => a.rank - b.rank)[0]?.value?.[0]
+    const topCNAME = (configData.recommendedCNAME ?? []).sort((a, b) => a.rank - b.rank)[0]?.value
+
+    if (sub) {
+      if (topCNAME) dnsRecords.push({ type: 'CNAME', name: sub, value: topCNAME })
+    } else {
+      if (topIPv4) dnsRecords.push({ type: 'A', name: '@', value: topIPv4 })
+      if (topCNAME) dnsRecords.push({ type: 'CNAME', name: 'www', value: topCNAME })
+    }
+  }
 
   return NextResponse.json(
-    {
-      ok: true,
-      domain,
-      verified: isVerified,
-      dnsRecords: suggestDnsRecords(sub, isMisconfigured),
-    },
+    { ok: true, domain, verified: isConfigured, dnsRecords },
     { status: 200 },
   )
 }

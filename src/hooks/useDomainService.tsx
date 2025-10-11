@@ -6,14 +6,14 @@ import type { Id } from "@/../convex/_generated/dataModel"
 import { api } from "@/../convex/_generated/api"
 import { tryCatch } from "@/lib/tryCatch"
 
-export interface DnsRecord {
-  type: string
-  name: string
-  value: string
-}
+interface DnsRecord { type: string; name: string; value: string }
 
-export type DomainResponse =
-  | { ok: true; domain: string; verified: boolean; dnsRecords: Array<DnsRecord>; slug?: string }
+type DomainResponse =
+  | { ok: true; domain: string; verified: boolean; dnsRecords: DnsRecord[]; slug?: string }
+  | { error: { code: string; message?: string } }
+
+type DeleteResponse =
+  | { ok: true; domain: string; slug: string | null }
   | { error: { code: string; message?: string } }
 
 interface UseDomainServiceParams {
@@ -23,12 +23,14 @@ interface UseDomainServiceParams {
 }
 
 interface UseDomainServiceResult {
-  dnsRecords: Array<DnsRecord>
+  dnsRecords: DnsRecord[]
   domainStatus: "verified" | "unverified"
   isCheckingStatus: boolean
   isSavingDomain: boolean
+  isDeletingDomain: boolean
   saveDomain: (domain: string) => Promise<DomainResponse>
-  getDomainStatus: () => Promise<DomainResponse | null>
+  deleteDomain: (domain: string) => Promise<DeleteResponse>
+  getDomainStatus: (opts?: { force?: boolean }) => Promise<void>
   errorMessage: string | null
 }
 
@@ -36,100 +38,167 @@ export function useDomainService(params: UseDomainServiceParams): UseDomainServi
   const { pageId, slug, customDomain } = params
   const updateLandingPage = useMutation(api.landingPages.update)
 
-  const [dnsRecords, setDnsRecords] = useState<Array<DnsRecord>>([])
+  const [dnsRecords, setDnsRecords] = useState<DnsRecord[]>([])
   const [domainStatus, setDomainStatus] = useState<"verified" | "unverified">("unverified")
-  const [isCheckingStatus, setIsCheckingStatus] = useState<boolean>(false)
-  const [isSavingDomain, setIsSavingDomain] = useState<boolean>(false)
+  const [isCheckingStatus, setIsCheckingStatus] = useState(false)
+  const [isSavingDomain, setIsSavingDomain] = useState(false)
+  const [isDeletingDomain, setIsDeletingDomain] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const applyDomainResponse = useCallback(
-    (response: DomainResponse) => {
-      if ("error" in response) {
-        setDnsRecords([])
-        setDomainStatus("unverified")
-        setErrorMessage(response.error.message ?? "Unbekannter Fehler")
-      } else {
-        setDnsRecords(response.dnsRecords ?? [])
-        setDomainStatus(response.verified ? "verified" : "unverified")
-        setErrorMessage(null)
-      }
-    },
-    [setDnsRecords, setDomainStatus, setErrorMessage],
-  )
-  const addDomain = useCallback(async (slug: string, domain: string): Promise<DomainResponse> => {
-    const { data, error } = await tryCatch(
-      fetch("/api/domain/add", {
+  
+  const resetToUnverified = useCallback((message?: string) => {
+    setDnsRecords([])
+    setDomainStatus("unverified")
+    setErrorMessage(message ?? null)
+  }, [])
+
+
+  const setDomainState = useCallback((response: DomainResponse) => {
+    if ("error" in response) {
+      resetToUnverified(response.error.message ?? "Unbekannter Fehler")
+      return
+    }
+    setDnsRecords(response.dnsRecords)
+    setDomainStatus(response.verified ? "verified" : "unverified")
+    setErrorMessage(null)
+  }, [resetToUnverified])
+
+
+  const jsonRequest = useCallback(async <T,>(url: string, options?: RequestInit): Promise<T> => {
+    const { data, error } = await tryCatch(fetch(url, options).then((r) => r.json()))
+    return error ? { error: { code: "NETWORK_ERROR", message: String(error) } } as T : data as T
+  }, [])
+
+
+  const addDomain = useCallback(
+    async (slugValue: string, domainValue: string): Promise<DomainResponse> =>
+      jsonRequest<DomainResponse>("/api/domain/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: slug, domain: domain }),
-      }).then((res) => res.json() as Promise<DomainResponse>),
-    )
-    if (error) {
-      const message = error instanceof Error ? error.message : String(error)
-      return { error: { code: "NETWORK_ERROR", message } }
-    }
+        body: JSON.stringify({ slug: slugValue, domain: domainValue }),
+      }),
+    [jsonRequest]
+  )
 
-    return data as DomainResponse
-  }, [])
+  const verifyDomain = useCallback(
+    async (domainValue: string): Promise<DomainResponse> =>
+      jsonRequest<DomainResponse>(`/api/domain/verify?domain=${encodeURIComponent(domainValue)}`),
+    [jsonRequest]
+  )
 
-  const verifyDomain = useCallback(async (domain: string): Promise<DomainResponse> => {
-    const { data, error } = await tryCatch(
-      fetch(`/api/domain/verify?domain=${encodeURIComponent(domain)}`).then(
-        (res) => res.json() as Promise<DomainResponse>,
-      ),
-    )
-    if (error) {
-      const message = error instanceof Error ? error.message : String(error)
-      return { error: { code: "NETWORK_ERROR", message } }
-    }
-    return data as DomainResponse
-  }, [])
-
-  const getDomainStatus = useCallback(async (): Promise<DomainResponse | null> => {
-    if (!slug || !customDomain) {
-      setDnsRecords([])
-      setDomainStatus("unverified")
-      setIsCheckingStatus(false)
-      return null
-    }
-
-    setIsCheckingStatus(true)
-    const response = await verifyDomain(customDomain)
-    applyDomainResponse(response)
-    setIsCheckingStatus(false)
-    return response
-  }, [slug, customDomain, verifyDomain, applyDomainResponse])
 
   
+  const getDomainStatus = useCallback(
+    async (opts?: { force?: boolean }): Promise<void> => {
+      if (!customDomain) {
+        resetToUnverified()
+        return
+      }
+
+      if (!opts?.force) {
+        try {
+          const raw = localStorage.getItem(`verifyCache:${customDomain}`)
+          if (raw) {
+            const parsed = JSON.parse(raw) as { t?: number; r?: DomainResponse }
+            const isFresh = Date.now() - (parsed.t ?? 0) < 300_000
+            const fallbackResponse = {
+              error: { code: "NETWORK_ERROR", message: "Unbekannter Fehler" },
+            }
+            setDomainState(parsed.r ?? fallbackResponse)
+            if (isFresh) return
+          }
+        } catch {}
+      }
+
+      setIsCheckingStatus(true)
+      try {
+        const response = await verifyDomain(customDomain)
+        setDomainState(response)
+        try {
+          localStorage.setItem(
+            `verifyCache:${customDomain}`,
+            JSON.stringify({ t: Date.now(), r: response })
+          )
+        } catch {}
+      } finally {
+        setIsCheckingStatus(false)
+      }
+    },
+    [customDomain, verifyDomain, setDomainState, resetToUnverified]
+  )
+
+
+
   const saveDomain = useCallback(
     async (domainInput: string): Promise<DomainResponse> => {
       setIsSavingDomain(true)
       try {
         const response = await addDomain(slug ?? "", domainInput)
+        
         if ("error" in response) {
           setErrorMessage(response.error.message ?? "Unbekannter Fehler")
-        } else {
-          try {
-            await updateLandingPage({
-              landingPageId: pageId,
-              customDomain: response.domain,
-            })
-          } catch (e) {
-            const message = e instanceof Error ? e.message : String(e)
-            setErrorMessage(message || "Unbekannter Fehler")
-          }
-
-          const status = await verifyDomain(response.domain)
-          applyDomainResponse(status)
+          return response
         }
-
+        
+        await tryCatch(
+          updateLandingPage({ 
+            landingPageId: pageId, 
+            customDomain: response.domain 
+          })
+        )
+        
+        const status = await verifyDomain(response.domain)
+        setDomainState(status)
+        
+        try {
+          localStorage.setItem(
+            `verifyCache:${response.domain}`, 
+            JSON.stringify({ t: Date.now(), r: status })
+          )
+        } catch {}
+        
         return response
       } finally {
         setIsSavingDomain(false)
       }
     },
-    [slug, pageId, addDomain, updateLandingPage, verifyDomain, applyDomainResponse],
+    [slug, pageId, addDomain, updateLandingPage, verifyDomain, setDomainState]
   )
+
+  
+
+  const deleteDomain = useCallback(
+    async (domainInput: string): Promise<DeleteResponse> => {
+      setIsDeletingDomain(true)
+      try {
+        const result = await jsonRequest<DeleteResponse>("/api/domain/delete", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ domain: domainInput }),
+        })
+        
+        if ("error" in result) {
+          setErrorMessage(result.error.message ?? "Unbekannter Fehler")
+          return result
+        }
+        
+        await tryCatch(
+          updateLandingPage({ landingPageId: pageId, customDomain: null })
+        )
+        
+        try {
+          localStorage.removeItem(`verifyCache:${domainInput}`)
+        } catch {}
+        
+        resetToUnverified()
+        return result
+      } finally {
+        setIsDeletingDomain(false)
+      }
+    },
+    [pageId, updateLandingPage, resetToUnverified, jsonRequest]
+  )
+
 
   useEffect(() => {
     void getDomainStatus()
@@ -140,7 +209,9 @@ export function useDomainService(params: UseDomainServiceParams): UseDomainServi
     domainStatus,
     isCheckingStatus,
     isSavingDomain,
+    isDeletingDomain,
     saveDomain,
+    deleteDomain,
     getDomainStatus,
     errorMessage,
   }

@@ -29,7 +29,7 @@ export function DomainInfo({ dnsRecords, errorMessage, onCopy }: DomainInfoProps
       <div className="mt-2">
         <h3 className="text-sm font-medium text-foreground">Schritt 2: Verifizieren & Verbinden</h3>
         <p className="mt-1 text-sm text-muted-foreground">
-          Klicken Sie auf "Aktualisieren", um die Einrichtung abzuschließen.
+          Klicken Sie auf &quot;Aktualisieren&quot;, um die Einrichtung abzuschließen.
         </p>
         {errorMessage && (
           <div className="mt-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md p-3">
