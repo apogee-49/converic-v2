@@ -19,7 +19,7 @@ export default function PageSettings(props: Props) {
   const [inputDomain, setInputDomain] = useState<string>("")
 
   const customDomain = useMemo<string | null>(() => {
-    const raw: string = String(page?.customDomain ?? "")
+    const raw = String(page?.customDomain ?? "")
     const value = raw.trim()
     return value.length > 0 ? value : null
   }, [page])
