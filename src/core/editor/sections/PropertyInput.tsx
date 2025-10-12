@@ -9,6 +9,7 @@ import { formatCamelCase } from "@/lib/utils";
 import type { PropertyInputProps } from "./types";
 import { PlusCircle, Trash2Icon, ImageIcon, ChartNoAxesGantt, PaintbrushIcon } from "lucide-react";
 import { IconPicker, Icon, type IconName } from "@/components/ui/icon-picker";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type FieldType = 'image' | 'theme' | 'beschreibung' | 'buttonUrl' | 'boolean' | 'array' | 'object' | 'text' | 'icon';
 
@@ -30,8 +31,8 @@ const getFieldType = (keyName: string, value: any): FieldType => {
 
 const ImageField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium">{formatCamelCase(keyName)}</label>
+    <div className="space-y-2 mb-6">
+      <Label className="text-sm font-medium">{formatCamelCase(keyName)}</Label>
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
@@ -61,27 +62,18 @@ const ThemeField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
   const handleChange = (newValue: string) => onChange(keyName, newValue, path);
 
   return (
-    <div className="mb-3">
-      <label className="block text-sm font-medium mb-1">{formatCamelCase(keyName)}:</label>
-      <div className="inline-flex p-1 border rounded-md">
-        {themes.map((theme) => (
-          <label
-            key={theme.value}
-            className={`flex-1 flex items-center justify-center px-3 py-1 text-sm rounded-md cursor-pointer ${value === theme.value ? 'bg-accent' : ''}`}
-          >
-            <input
-              type="radio"
-              name={`theme-${path.join('-')}-${keyName}`}
-              value={theme.value}
-              checked={value === theme.value}
-              onChange={(e) => handleChange(e.target.value)}
-              className="sr-only"
-            />
-            <theme.Icon className="w-4 h-4 mr-1" />
-            {theme.label}
-          </label>
-        ))}
-      </div>
+    <div className="mb-6 flex flex-col gap-2">
+      <Label className="block text-sm font-medium">{formatCamelCase(keyName)}</Label>
+      <Tabs value={(typeof value === 'string' && value) ? value : 'theme-1'} onValueChange={handleChange}>
+        <TabsList className="p-1">
+          {themes.map((theme) => (
+            <TabsTrigger key={theme.value} value={theme.value} className="gap-1.5">
+              <theme.Icon className="w-4 h-4" />
+              {theme.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
     </div>
   );
 };
@@ -89,7 +81,7 @@ const ThemeField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
 const BooleanField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
   const id = `switch-${path.join('-')}-${keyName}`;
   return (
-    <div className="mb-4 flex items-center gap-2">
+    <div className="mb-6 flex items-center gap-2">
       <Switch
         id={id}
         checked={!!value}
@@ -102,8 +94,8 @@ const BooleanField = ({ keyName, value, onChange, path }: PropertyInputProps) =>
 
 const TextField = ({ keyName, value, onChange, path, isMultiline = false, isButtonUrl = false }: PropertyInputProps & { isMultiline?: boolean, isButtonUrl?: boolean }) => {
   return (
-    <div className="mb-3">
-      <label className="block mb-1 text-sm font-medium">{formatCamelCase(keyName)}:</label>
+    <div className="mb-6 flex flex-col gap-2">
+      <Label className="block text-sm font-medium">{formatCamelCase(keyName)}</Label>
       {isMultiline ? (
         <Textarea
           value={value}
@@ -148,8 +140,8 @@ const ArrayField = ({ keyName, value, path, onChange, sectionId }: PropertyInput
   };
 
   return (
-    <div className="mb-4">
-      <div className="mb-1 text-sm font-medium">{formatCamelCase(keyName)}</div>
+    <div className="mb-6 flex flex-col gap-2">
+      <Label className="text-sm font-medium">{formatCamelCase(keyName)}</Label>
       <div className="space-y-2">
         {value.map((item: any, index: number) => (
           <div key={index} className="border rounded-md p-2">
@@ -179,7 +171,7 @@ const ArrayField = ({ keyName, value, path, onChange, sectionId }: PropertyInput
         ))}
       </div>
       {canAddItems && (
-        <Button variant="ghost" size="sm" onClick={addNewItem} className="mt-2 gap-2">
+        <Button variant="ghost" size="sm" onClick={addNewItem} className="mt-2 gap-2 align-start w-fit">
           <PlusCircle className="w-4 h-4" /> Element hinzufügen
         </Button>
       )}
@@ -189,8 +181,8 @@ const ArrayField = ({ keyName, value, path, onChange, sectionId }: PropertyInput
 
 const ObjectField = ({ keyName, value, path, onChange, sectionId }: PropertyInputProps) => {
   return (
-    <div className="mb-3">
-      <div className="mb-1 text-sm font-semibold">{formatCamelCase(keyName)}:</div>
+    <div className="mb-3 flex flex-col gap-2">
+      <Label className="text-sm font-semibold">{formatCamelCase(keyName)}</Label>
       <div className="pl-2">
         {Object.entries(value).map(([k, v]) => (
           <PropertyInput
@@ -216,7 +208,7 @@ const IconField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
 
   return (
     <div className={`space-y-2 ${isInList ? 'mb-3' : ''}`}>
-      <label className="text-sm font-medium">{formatCamelCase(keyName)}</label>
+      <Label className="text-sm font-medium">{formatCamelCase(keyName)}</Label>
       <div className="flex items-center gap-2">
         {value && (
           <div className="w-8 h-8 border rounded-md flex items-center justify-center">

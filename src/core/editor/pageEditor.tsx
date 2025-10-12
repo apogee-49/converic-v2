@@ -87,7 +87,7 @@ export default function PageEditor({ pageId }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 h-full">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full mt-2">
       <div className="lg:col-span-1">
         <SortableList
           items={items}
@@ -97,7 +97,7 @@ export default function PageEditor({ pageId }: Props) {
           onSectionUpdate={(s: Section) => handleSectionUpdate(s, 'add')}
         />
       </div>
-      <div className="lg:col-span-2 border rounded-lg">
+      <div className="lg:col-span-2">
         <SectionEditor
           activeItem={activeItem}
           onSave={(section) => { void handleSectionUpdate(section, 'save') }}

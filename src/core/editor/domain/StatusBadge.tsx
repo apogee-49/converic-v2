@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle2Icon, AlertTriangle, Loader2 } from 'lucide-react';
+import { CheckCircle2Icon, AlertTriangle, Loader } from 'lucide-react';
 
 interface DomainStatusBadgeProps {
   status: string;
@@ -11,7 +11,7 @@ export function DomainStatusBadge({ status, isLoading, isDeleting }: DomainStatu
   if (isDeleting) {
     return (
       <Badge className="w-fit font-medium bg-destructive/10 text-destructive hover:bg-destructive/10">
-        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+        <Loader className="w-3 h-3 mr-1 animate-spin" />
         Wird gelöscht...
       </Badge>
     );
@@ -20,7 +20,7 @@ export function DomainStatusBadge({ status, isLoading, isDeleting }: DomainStatu
   if (isLoading) {
     return (
       <Badge className="w-fit font-medium bg-muted text-muted-foreground hover:bg-muted">
-        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+        <Loader className="w-3 h-3 mr-1 animate-spin" />
         Überprüfe Status...
       </Badge>
     );

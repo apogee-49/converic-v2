@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import type { SectionEditorProps } from './types';
 import { PropertyInput } from './PropertyInput';
 import { Button } from "@/components/ui/button";
-import { PencilIcon, ArrowRight, Trash2Icon, Loader2 } from 'lucide-react';
+import { SaveIcon, Trash2Icon, Loader } from 'lucide-react';
 import { getSectionName, sortObjectByBaseline } from '@/lib/utils';
 
 const SectionEditorEmptyState = () => (
@@ -12,7 +12,6 @@ const SectionEditorEmptyState = () => (
 );
 
 const EditorHeader = ({ 
-  title, 
   hasChanges, 
   onSave, 
   onDelete,
@@ -26,30 +25,26 @@ const EditorHeader = ({
 }) => {
   const isDisabled = isSaving || !hasChanges;
   return (
-    <div className="shrink-0 flex justify-between items-center border rounded-md px-3 py-3 mt-3 mx-3">
-      <div className="flex items-center gap-2">
-        <PencilIcon className="w-4 h-4" />
-        <h2 className="text-sm font-semibold">{title}</h2>
-      </div>
+    <div className="shrink-0 flex bg-muted justify-between items-center border rounded-b-2xl px-4 sm:px-8 pt-8 pb-4 -mt-4">
       <div className="flex items-center gap-2">
         <Button
-          variant="ghost"
-          size="icon"
+          variant="default"
+          className="gap-2"
+          onClick={onSave}
+          disabled={isDisabled}
+        >
+          {isSaving && <Loader className="w-4 h-4 animate-spin" />}
+          {!isSaving && <SaveIcon className="w-4 h-4" />}
+          {isSaving ? "Speichern..." : hasChanges ? "Speichern" : "Gespeichert"}
+        </Button>
+        <Button
+          variant="outline"
           onClick={() => onDelete()}
           aria-label="Abschnitt löschen"
           disabled={isSaving}
         >
           <Trash2Icon className="w-4 h-4" />
-        </Button>
-        <Button
-          variant="default"
-          className="text-sm gap-2"
-          onClick={onSave}
-          disabled={isDisabled}
-        >
-          {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
-          {isSaving ? "Speichern..." : hasChanges ? "Speichern" : "Gespeichert"}
-          {!isSaving && <ArrowRight className="w-4 h-4" />}
+          Löschen
         </Button>
       </div>
     </div>
@@ -67,9 +62,9 @@ const EditorContent = ({
   sectionType: string;
   onChange: (key: string, value: any, path: string[]) => void;
 }) => (
-  <div className="flex-1 relative">
-    <div className="absolute inset-0 overflow-y-auto p-3">
-      <div className="space-y-3">
+  <div className="flex-1 relative border rounded-2xl bg-background">
+    <div className="absolute inset-0 overflow-y-auto px-4 py-6 sm:p-8 gap-x-6 gap-y-8">
+      <div>
         {Object.entries(sortObjectByBaseline(properties, sectionType))
           .filter(([key]) => key !== "sectionId")
           .map(([key, value]) => (
@@ -161,18 +156,18 @@ export const SectionEditor: React.FC<SectionEditorProps> = ({
 
   return (
     <div className="h-full flex flex-col">
+      <EditorContent
+        properties={properties}
+        sectionId={activeItem.id ?? `${activeItem.type}-${activeItem.position ?? ''}`}
+        sectionType={activeItem.type}
+        onChange={updateProperties}
+      />
       <EditorHeader
         title={getSectionName(activeItem.type)}
         hasChanges={hasChanges}
         onSave={saveChanges}
         onDelete={deleteSection}
         isSaving={isSaving}
-      />
-      <EditorContent
-        properties={properties}
-        sectionId={activeItem.id ?? `${activeItem.type}-${activeItem.position ?? ''}`}
-        sectionType={activeItem.type}
-        onChange={updateProperties}
       />
     </div>
   );

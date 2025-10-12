@@ -41,7 +41,7 @@ export default function PageSettings(props: Props) {
   const isLoading = typeof page === "undefined"
 
   return (
-    <div className="border bg-muted border-border rounded-lg flex flex-col gap-4 md:gap-8 p-4 md:p-6">
+    <div className="flex flex-col gap-4 md:gap-8 py-2">
       <DomainSection
         isLoading={isLoading}
         customDomain={customDomain}

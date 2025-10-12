@@ -147,7 +147,7 @@ export function ColorPickerButton({ label, color, onChange }: ColorPickerButtonP
           <Button
             type="button"
             variant="outline"
-            className="flex min-w-0 w-full items-center justify-between cursor-pointer gap-2 rounded-md border p-3 active:scale-[0.99] duration-none"
+            className="flex min-w-0 w-full items-center justify-between cursor-pointer gap-2 rounded-md border p-3 active:scale-none duration-none"
           >
             <div className="flex items-center gap-2.5">
               <span className="h-5 w-5 rounded" style={{ backgroundColor: currentHex }} />

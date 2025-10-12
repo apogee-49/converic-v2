@@ -56,13 +56,16 @@ export const sectionCategories: Record<string, Category> = {
 export const UPLOAD_CONFIG = {
   maxSizeMB: 5,
   maxFiles: 3,
-  allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif'] as const,
+  allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif', 'ico'] as const,
   allowedMimeTypes: [
     'image/jpeg', 
     'image/png', 
     'image/gif', 
     'image/webp',
-    'image/avif'
+    'image/avif',
+    'image/x-icon',
+    'image/vnd.microsoft.icon',
+    'image/ico'
   ] as const,
   bucketName: 'user-images' as const,
   

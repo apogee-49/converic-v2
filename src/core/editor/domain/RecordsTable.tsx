@@ -31,7 +31,7 @@ export function DNSRecordsTable({ records, onCopy }: DNSRecordsTableProps) {
     <div className="rounded-md border overflow-hidden">
       <table className="w-full ">
         <thead>
-          <tr className="border-b bg-muted">
+          <tr className="border-b bg-muted ">
             <th className="px-4 py-2 text-left text-sm font-medium">Type</th>
             <th className="px-4 py-2 text-left text-sm font-medium">Name</th>
             <th className="px-4 py-2 text-left text-sm font-medium">Value</th>

@@ -132,6 +132,7 @@ export function useDomainService(params: UseDomainServiceParams): UseDomainServi
   const saveDomain = useCallback(
     async (domainInput: string): Promise<DomainResponse> => {
       setIsSavingDomain(true)
+      setErrorMessage(null)
       try {
         const response = await addDomain(slug ?? "", domainInput)
         

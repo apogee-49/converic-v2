@@ -57,13 +57,11 @@ async function getPageMetadata(slug: string) {
   return {
     title: meta.title ?? '',
     description: meta.description ?? '',
-    keywords: Array.isArray(meta.keywords) ? meta.keywords : [],
     indexed: typeof meta.indexed === 'boolean' ? meta.indexed : true,
     favicon: typeof layout.favicon === 'string' ? layout.favicon : undefined,
   } as {
     title: string;
     description: string;
-    keywords: string[];
     indexed: boolean;
     favicon?: string;
   };
@@ -77,7 +75,6 @@ export async function generateMetadata({ params }: { params?: ParamsSource }): P
   return {
     title: metadata.title,
     description: metadata.description,
-    keywords: metadata.keywords,
     robots: metadata.indexed
       ? { index: true, follow: true }
       : { index: false, follow: false },

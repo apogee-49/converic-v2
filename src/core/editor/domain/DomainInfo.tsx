@@ -10,7 +10,8 @@ interface DomainInfoProps {
 }
 
 export function DomainInfo({ dnsRecords, errorMessage, onCopy }: DomainInfoProps) {
-  if (dnsRecords.length === 0 && !errorMessage) return null
+  const filteredError = errorMessage === "Invalid request body or domain format" ? null : errorMessage
+  if (dnsRecords.length === 0 && !filteredError) return null
   return (
     <div className="flex flex-col gap-4 mt-1">
       <Separator />
@@ -31,9 +32,9 @@ export function DomainInfo({ dnsRecords, errorMessage, onCopy }: DomainInfoProps
         <p className="mt-1 text-sm text-muted-foreground">
           Klicken Sie auf &quot;Aktualisieren&quot;, um die Einrichtung abzuschließen.
         </p>
-        {errorMessage && (
+        {filteredError && (
           <div className="mt-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md p-3">
-            {errorMessage}
+            {filteredError}
           </div>
         )}
       </div>

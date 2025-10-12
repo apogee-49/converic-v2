@@ -42,7 +42,7 @@ export const SortableList = ({
   }
 
   return (
-    <div className="h-full flex flex-col border rounded-md p-2">
+    <div className="h-full flex flex-col border rounded-2xl p-3 bg-muted will-change-transform">
       <div className="flex-1 space-y-1 overflow-auto">
         <DndContext
           sensors={sensors}
@@ -100,12 +100,13 @@ const SortableItem = ({ item, isActive, onClick } : { item: Section; isActive: b
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`flex items-center gap-2 p-2 border rounded-md cursor-pointer ${isActive ? 'border-primary' : 'border-muted'}`}
+      className={`flex items-center gap-2 p-2.5 bg-background rounded-lg border bg-card 
+        cursor-pointer hover:border-primary/40 ${isActive ? 'border-primary/40 bg-primary/5' : ''}`}
       onClick={onClick}
     >
       <DragHandle id={itemId} />
       <div className="flex-1 text-sm font-medium">{sectionName}</div>
-      <ChevronRightIcon className={`h-4 w-4 ${isActive ? 'rotate-180' : ''}`} />
+      <ChevronRightIcon className={`h-4 w-4 duration-200 ease-out ${isActive ? 'rotate-180' : ''}`} />
     </div>
   );
 };
@@ -185,7 +186,9 @@ const AddSection = ({ items, onSectionUpdate} : {
     <div className="mt-auto pt-2">
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="w-full gap-2">
+          <Button             variant="outline" 
+            className="w-full py-[1.35rem] gap-2 text-muted-foreground bg-muted-foreground/10 border-muted-foreground/10 
+            hover:text-muted-foreground hover:bg-muted-foreground/5 hover:border-muted-foreground/15 active:scale-none duration-none">
             <PlusIcon className="h-4 w-4" />
             Abschnitt hinzufügen
           </Button>

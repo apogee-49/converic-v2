@@ -74,7 +74,7 @@ export default function PageStyling({ pageId }: Props) {
   if (!settings) return null;
 
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col gap-4 md:gap-10 py-2">
       <MetaSection
         settings={settings}
         setSettings={setSettings}
@@ -83,6 +83,7 @@ export default function PageStyling({ pageId }: Props) {
         isSaving={savingStatus.meta}
         hasChanges={hasMetaChanges}
       />
+
       <LayoutSection
         settings={settings}
         setSettings={setSettings}

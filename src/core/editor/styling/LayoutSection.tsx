@@ -2,7 +2,7 @@
 
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
-import { PaletteIcon, CheckIcon, InfoIcon, DownloadIcon, RefreshCcwIcon, UploadIcon } from 'lucide-react'
+import { PaletteIcon, InfoIcon, RefreshCcwIcon, UploadIcon } from 'lucide-react'
 import { Section } from '@/components/settings-section'
 import type { LayoutSectionProps } from './types'
 import { Button } from "@/components/ui/button"
@@ -61,27 +61,27 @@ export function LayoutSection({ settings, setSettings, isLoading, onSave, isSavi
           </div>
         ) : (
           <>
-            <Label className="block text-sm/6 font-medium text-gray-900">Favicon</Label>
-            <div className="bg-background flex flex-col gap-3 mt-2">
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => setIsDialogOpen(true)} className="gap-2">
-                  {settings.layout.favicon ? <RefreshCcwIcon className="w-4 h-4" /> : <UploadIcon className="w-4 h-4" />}
-                  {settings.layout.favicon ? 'Favicon ändern' : 'Favicon hochladen'}
-                </Button>
-                {settings.layout.favicon && (
-                  <Button variant="outline" size="sm" onClick={() => window.open(settings.layout.favicon, '_blank')} className="gap-2">
-                    <DownloadIcon className="w-4 h-4" />
-                    Herunterladen
-                  </Button>
-                )}
-              </div>
-              {!settings.layout.favicon && (
-                <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <InfoIcon className="w-3.5 h-3.5" />
-                  <p className="text-xs">Kein Favicon ausgewählt</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="block text-sm/6 font-medium text-gray-900">Favicon</Label>
+                <div className="bg-background flex flex-col gap-3 mt-2">
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => setIsDialogOpen(true)} className="gap-2">
+                      {settings.layout.favicon ? <RefreshCcwIcon className="w-4 h-4" /> : <UploadIcon className="w-4 h-4" />}
+                      {settings.layout.favicon ? 'Favicon ändern' : 'Favicon hochladen'}
+                    </Button>
+                  </div>
+                  {!settings.layout.favicon && (
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <InfoIcon className="w-3.5 h-3.5" />
+                      <p className="text-xs">Kein Favicon ausgewählt</p>
+                    </div>
+                  )}
                 </div>
-              )}
-              <FaviconPlaceholder faviconUrl={settings.layout.favicon} />
+              </div>
+              <div className="border border-border bg-muted rounded-xl overflow-hidden">
+                <FaviconPlaceholder faviconUrl={settings.layout.favicon} />
+              </div>
             </div>
           </>
         )}
@@ -146,19 +146,14 @@ export function LayoutSection({ settings, setSettings, isLoading, onSave, isSavi
                 return (
                   <label
                     key={value}
-                    className={`relative flex flex-col items-center p-4 rounded-lg cursor-pointer transition-all duration-200 ${
-                      isSelected ? 'ring-1 ring-primary/30 bg-primary/5' : 'bg-muted hover:ring-1 hover:ring-muted-foreground/30'
+                    className={`relative active:scale-97 flex flex-col items-center border border-border p-4 rounded-lg cursor-pointer transition-all duration-200 ease-out ${
+                      isSelected ? 'border-primary/30 bg-primary/5' : ''
                     }`}
                   >
                     <div className="mb-3 flex items-center justify-center w-full max-w-[95px] mx-auto">
                       {icon}
                     </div>
                     <span className="text-sm font-regular text-center">{label}</span>
-                    {isSelected && (
-                      <div className="absolute bottom-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                        <CheckIcon className="w-3.5 h-3.5 text-white" />
-                      </div>
-                    )}
                     <input
                       type="radio"
                       name="buttonRadius"
