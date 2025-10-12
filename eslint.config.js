@@ -43,6 +43,7 @@ export default tseslint.config(
       "@typescript-eslint/prefer-nullish-coalescing": "warn",
       "@typescript-eslint/dot-notation": "warn",
       "@typescript-eslint/no-unnecessary-type-assertion": "warn",
+      "@typescript-eslint/non-nullable-type-assertion-style": "warn",
       "@typescript-eslint/no-unsafe-return": "warn",
       "@typescript-eslint/no-redundant-type-constituents": "warn",
 

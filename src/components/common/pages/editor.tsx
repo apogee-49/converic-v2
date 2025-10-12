@@ -55,7 +55,7 @@ export default function Editor({ pageId }: EditorProps) {
             tab.isLink ? (
               <a
                 key={tab.value}
-                href={previewUrl || '#'}
+                href={previewUrl ?? '#'}
                 onClick={handlePreviewClick}
                 target="_blank"
                 rel="noopener noreferrer"

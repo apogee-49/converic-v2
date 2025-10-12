@@ -16,23 +16,32 @@ type WithAsChild<Base extends object> =
   | (Base & { asChild?: false | undefined });
 
 type SlotProps<T extends HTMLElement = HTMLElement> = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  children?: any;
+  children: React.ReactElement;
 } & DOMMotionProps<T>;
 
 function mergeRefs<T>(
-  ...refs: (React.Ref<T> | undefined)[]
+  ...refs: Array<React.Ref<T> | undefined>
 ): React.RefCallback<T> {
   return (node) => {
     refs.forEach((ref) => {
       if (!ref) return;
       if (typeof ref === 'function') {
         ref(node);
-      } else {
-        (ref as React.RefObject<T | null>).current = node;
+        return;
+      }
+      if (typeof ref === 'object' && 'current' in ref) {
+        (ref as React.MutableRefObject<T | null>).current = node;
       }
     });
   };
+}
+
+function toReactRef<T>(maybe: unknown): React.Ref<T> | undefined {
+  if (typeof maybe === 'function') return maybe as React.RefCallback<T>;
+  if (maybe && typeof maybe === 'object' && 'current' in (maybe as Record<string, unknown>)) {
+    return maybe as React.MutableRefObject<T | null>;
+  }
+  return undefined;
 }
 
 function mergeProps<T extends HTMLElement>(
@@ -42,17 +51,20 @@ function mergeProps<T extends HTMLElement>(
   const merged: AnyProps = { ...childProps, ...slotProps };
 
   if (childProps.className || slotProps.className) {
-    merged.className = cn(
-      childProps.className as string,
-      slotProps.className as string,
-    );
+    const childClass =
+      typeof childProps.className === 'string' ? childProps.className : undefined;
+    const slotClass =
+      typeof slotProps.className === 'string' ? slotProps.className : undefined;
+    merged.className = cn(childClass, slotClass);
   }
 
   if (childProps.style || slotProps.style) {
-    merged.style = {
-      ...(childProps.style as React.CSSProperties),
-      ...(slotProps.style as React.CSSProperties),
-    };
+    const childStyle =
+      childProps.style && typeof childProps.style === 'object'
+        ? (childProps.style as React.CSSProperties)
+        : undefined;
+    const slotStyle = slotProps.style as React.CSSProperties | undefined;
+    merged.style = { ...(childStyle ?? {}), ...(slotStyle ?? {}) };
   }
 
   return merged;
@@ -83,7 +95,7 @@ function Slot<T extends HTMLElement = HTMLElement>({
   const mergedProps = mergeProps(childProps, props);
 
   return (
-    <Base {...mergedProps} ref={mergeRefs(childRef as React.Ref<T>, ref)} />
+    <Base {...mergedProps} ref={mergeRefs(toReactRef<T>(childRef), ref)} />
   );
 }
 
