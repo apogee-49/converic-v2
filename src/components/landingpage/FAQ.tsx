@@ -24,12 +24,12 @@ interface FAQProps {
     overtitle: string;
     titel: string;
     buttonText: string;
-    elemente: FAQItem[];
+    fragen: FAQItem[];
   };
 }
 
 export default function FAQ({ data }: FAQProps) {
-  const faq = data || { elemente: [] };
+  const faq = data || { fragen: [] };
 
   return (
     <Section title={faq.overtitle} subtitle={faq.titel}>
@@ -39,7 +39,7 @@ export default function FAQ({ data }: FAQProps) {
           collapsible
           className="flex w-full flex-col items-center justify-center space-y-2"
         >
-          {faq.elemente.map((faqItem: FAQItem, idx: number) => (
+          {faq.fragen.map((faqItem: FAQItem, idx: number) => (
             <AccordionItem
               key={idx}
               value={faqItem.frage}

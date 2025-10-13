@@ -30,7 +30,7 @@ type TabsListProps = TabsListPrimitiveProps;
 
 function TabsList({ className, ...props }: TabsListProps) {
   return (
-    <TabsHighlightPrimitive className="pointer-events-none absolute left-0 right-0 bottom-0 h-0 border-b-2 border-foreground">
+    <TabsHighlightPrimitive className="pointer-events-none absolute left-0 right-0 bottom-0 h-0 border-b-2 border-primary">
       <TabsListPrimitive
         className={cn(
           'text-muted-foreground inline-flex h-12 w-fit items-center justify-center',

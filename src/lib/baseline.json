@@ -6,10 +6,14 @@
   },
   "hero": {
     "theme": "theme-1",
-    "overtitle": "Höhere Lead-Conversions",
+    "overtitle": "Höhere Lead-Conversions2",
     "titel": "Maximieren Sie Ihre Conversions mit Multi-Step-Forms",
-    "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/Hero-Image.png",
-    "inhalt": [
+    "bild": {
+      "url": "https://healthy-goldfinch-760.convex.cloud/api/storage/c47a9479-1319-4caf-92aa-2861d4209717",
+      "meta": { "fileName": "Hero-Image.png", "size": 245678 },
+      "visible": "both"
+    },
+    "bulletpoints": [
       {
         "stichpunkt" : "Steigern Sie Ihre Conversion-Rate mit Multi-Step-Formularen"
       },
@@ -21,6 +25,7 @@
       }
     ],
     "buttonText": "Jetzt zum Beispielform",
+    "buttonUrl": "#form",
     "pfeil": true
   },
   "jarvis": {
@@ -71,7 +76,7 @@
     "theme": "theme-1",
     "overtitle": "So funktioniert es!",
     "titel": "Ihr Fahrplan zu mehr Leads",
-    "elemente": [
+    "schritte": [
       {
         "icon": "pencil-ruler",
         "title": "Leitfaden für die Inhalte",
@@ -93,25 +98,25 @@
     "titel": "Anwendungsbereiche",
     "inhalt": "Klassische Landingpages sind oft langsam, nicht interaktiv oder mobil-optimiert, obwohl 98% Ihrer Zielgruppe Social Media am Handy nutzt. Durch uns erzielen Sie mehr Termine, Mitarbeiter und Leads.",
     "buttonText": "Zurück zum Beispielform",
-    "elemente": [
+    "features": [
       {
         "icon": "file-badge",
-        "caption": "Mehr qualifizierte Kundenanfragen",
+        "title": "Mehr qualifizierte Kundenanfragen",
         "beschreibung": "Verlinken Sie unsere Landingpage-Funnels einfach in Ihrer Hauptwebsite und verwandeln Sie mit hoher Conversion-Rate Besucher in qualifizierte Kundenanfragen."
       },
       {
         "icon": "calendar-days",
-        "caption": "Automatisierte Terminbuchungen",
+        "title": "Automatisierte Terminbuchungen",
         "beschreibung": "Unsere Funnels qualifizieren durch gezielte Fragen Ihre Zielgruppe, welche nach ausfüllen des Formulars einfach einen verfügbaren Termin für ein Beratungsgespräch bei Ihnen buchen kann."
       },
       {
         "icon": "file-user",
-        "caption": "Leichtere Mitarbeitergewinnung",
+        "title": "Leichtere Mitarbeitergewinnung",
         "beschreibung": "Durch den Einsatz smarter Funnels können Bewerber sich in weniger als 2 Minutes unkompliziert bei Ihnen bewerben. Das Ergebnis? Qualifizierte Bewerberanfragen auf Knopfdruck."
       },
       {
         "icon": "mail-plus",
-        "caption": "Aufbauen von E-Mail-Listen",
+        "title": "Aufbauen von E-Mail-Listen",
         "beschreibung": "Anstatt Interessenten um einen Termin zu bitten, bieten Sie erstmal Mehrwert in Form von Freebies oder Fallstudien an. So generieren Sie günstig Kontakte und bauen eine E-Mail-Liste auf."
       }
     ]
@@ -121,17 +126,21 @@
     "titel": "Wirb effektiver im mobilen Zeitalter & starte heute",
     "inhalt": "Trennen Sie die Spreu vom Weizen: Sortieren Sie schlechte Leads mit bedingten Logiken und E-Mail-Validierung heraus, bevor das Formular abgeschickt wird. So kommen bei Ihnen garantiert die besten Leads an.",
     "buttonText": "Zum Beispielform",
-    "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/Hero-Image.png",
+    "bild": {
+      "url": "https://healthy-goldfinch-760.convex.cloud/api/storage/c47a9479-1319-4caf-92aa-2861d4209717",
+      "meta": { "fileName": "Hero-Image.png", "size": 245678 },
+      "visible": "both"
+    },
     "reversed": false,
-    "elemente": [
+    "bulletpoints": [
       {
         "icon": "badge-check",
-        "name": "Erfolgreiche Vorlagen: ",
+        "title": "Erfolgreiche Vorlagen: ",
         "beschreibung": "Unsere UI Components wurden bereits erfolgreich in dutzenden Landingpages getestet."
       },
       {
         "icon": "badge-check",
-        "name": "Personalisierung: ",
+        "title": "Personalisierung: ",
         "beschreibung": "Leiten Sie Interessenten auf individuelle Pfade, je nach Klick, um besser sotieren zu können."
       }
     ]
@@ -141,41 +150,46 @@
     "overtitle": "Kundestimmen",
     "titel": "Was unsere Kunden sagen",
     "sterneAnzeigen": true,
-    "elemente": [
+    "bewertungen": [
       {
         "name": "Lena Müller",
         "rolle": "Marketing Manager",
-        "beschreibung": "Die Implementierung der Multi-Step-Formulare hat unsere Lead-Conversion-Rate erheblich gesteigert.",
+        "anfang": "Die Implementierung der Multi-Step-Formulare hat unsere Lead-Conversion-Rate erheblich gesteigert.",
         "highlight": "Wir sehen eine 40%ige Steigerung bei qualifizierten Anfragen.",
-        "conclusion": "Ein Muss für jedes Unternehmen."
+        "ende": "Ein Muss für jedes Unternehmen.",
+        "stars": 5
       },
       {
         "name": "Thomas Schmidt",
         "rolle": "Verkaufsleiter",
-        "beschreibung": "Dank der benutzerfreundlichen Landingpages konnten wir unsere Kundenanfragen verdoppeln.",
+        "anfang": "Dank der benutzerfreundlichen Landingpages konnten wir unsere Kundenanfragen verdoppeln.",
         "highlight": "Die Automatisierung der Terminbuchungen spart uns wertvolle Zeit.",
-        "conclusion": "Absolut empfehlenswert!"
+        "ende": "Absolut empfehlenswert!",
+        "stars": 5
       },
       {
         "name": "Julia Fischer",
         "rolle": "Sales Director",
-        "beschreibung": "Die neuen Formulare sind nicht nur effizient, sondern auch intuitiv.",
+        "anfang": "Die neuen Formulare sind nicht nur effizient, sondern auch intuitiv.",
         "highlight": "Unsere Kunden schätzen die einfache Bedienung und die klaren Anweisungen.",
-        "conclusion": "Ein echter Gewinn für unseren Kundenservice."
+        "ende": "Ein echter Gewinn für unseren Kundenservice.",
+        "stars": 5
       },
       {
         "name": "Markus Weber",
         "rolle": "CMO",
-        "beschreibung": "Als Startup müssen wir schnell und effizient arbeiten. Die Formulare haben unsere Prozesse erheblich beschleunigt.",
+        "anfang": "Als Startup müssen wir schnell und effizient arbeiten. Die Formulare haben unsere Prozesse erheblich beschleunigt.",
         "highlight": "Unsere Conversion-Rate hat sich um 30% verbessert.",
-        "conclusion": ""
+        "ende": "",
+        "stars": 5
       },
       {
         "name": "Anna Becker",
         "rolle": "Produktmanagerin",
-        "beschreibung": "Die Integration der Multi-Step-Formulare hat die Benutzererfahrung auf unserer Website erheblich verbessert.",
+        "anfang": "Die Integration der Multi-Step-Formulare hat die Benutzererfahrung auf unserer Website erheblich verbessert.",
         "highlight": "Die Kundenbindung ist jetzt stärker als je zuvor.",
-        "conclusion": "Eine großartige Lösung für jedes Unternehmen."
+        "ende": "Eine großartige Lösung für jedes Unternehmen.",
+        "stars": 5
       }
     ]
   },
@@ -184,44 +198,65 @@
     "titel": "Sprechen Sie jetzt mit dem Entwickler der Seite",
     "buttonText": "Jetzt Anrufen",
     "buttonUrl": "tel:0151 53570908",
-    "bild": "/profile.jpeg"
+    "bild": {
+      "url": "https://healthy-goldfinch-760.convex.cloud/api/storage/c47a9479-1319-4caf-92aa-2861d4209717",
+      "meta": { "fileName": "Hero-Image.png", "size": 245678 }
+    }
   },
   "images": {
     "titel": "Eine Auswahl installierter PV-Anlagen",
     "beschreibung": "Entdecken Sie unsere erfolgreich installierten PV-Anlagen und sehen Sie selbst, wie unsere Kunden bereits von nachhaltiger Solarenergie profitieren. Jede Anlage ist ein Beweis für unsere Expertise und unseren Anspruch, höchste Qualität zu liefern.",
-    "elemente": [
+    "bilder": [
       {
-        "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/home1.webp",
+        "bild": {
+          "url": "https://healthy-goldfinch-760.convex.cloud/api/storage/c47a9479-1319-4caf-92aa-2861d4209717",
+          "meta": { "fileName": "home1.webp", "size": 123456 }
+        },
         "titel": "12,18 kWp",
         "location": "Mannheim",
         "module": "28 Module"
       },
       {
-        "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/home2.webp",
+        "bild": {
+          "url": "https://healthy-goldfinch-760.convex.cloud/api/storage/c47a9479-1319-4caf-92aa-2861d4209717",
+          "meta": { "fileName": "home2.webp", "size": 123456 }
+        },
         "titel": "4,12 kWp + E-Ladestation",
         "location": "Karlsruhe",
         "module": "32 Module"
       },
       {
-        "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/home3.webp",
+        "bild": {
+          "url": "https://healthy-goldfinch-760.convex.cloud/api/storage/c47a9479-1319-4caf-92aa-2861d4209717",
+          "meta": { "fileName": "home3.webp", "size": 123456 }
+        },
         "titel": "10,4 kWp + E-Ladestation",
         "location": "Neustadt",
         "module": "24 Module"
       },
       {
-        "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/home4.webp",
+        "bild": {
+          "url": "https://healthy-goldfinch-760.convex.cloud/api/storage/c47a9479-1319-4caf-92aa-2861d4209717",
+          "meta": { "fileName": "home4.webp", "size": 123456 }
+        },
         "titel": "12,32 kWp",
         "location": "Karlsruhe",
         "module": "32 Module"
       },
       {
-        "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/home5.webp",
+        "bild": {
+          "url": "https://healthy-goldfinch-760.convex.cloud/api/storage/c47a9479-1319-4caf-92aa-2861d4209717",
+          "meta": { "fileName": "home5.webp", "size": 123456 }
+        },
         "titel": "13,5 kWp",
         "location": "Ladenburg",
         "module": "30 Module"
       },
       {
-        "bild": "https://wkiazsrcdyalslpplhzv.supabase.co/storage/v1/object/public/project-images/images/home6.webp",
+        "bild": {
+          "url": "https://healthy-goldfinch-760.convex.cloud/api/storage/c47a9479-1319-4caf-92aa-2861d4209717",
+          "meta": { "fileName": "home6.webp", "size": 123456 }
+        },
         "titel": "9,8 kWp",
         "location": "Hockenheim",
         "module": "22 Module"
@@ -232,7 +267,7 @@
     "overtitle": "FAQ",
     "titel": "Ihre Fragen, unsere Antworten",
     "buttonText": "Zurück zum Beispielform",
-    "elemente": [
+    "fragen": [
       {
         "frage": "Welche Arten von Formularfeldern gibt es?",
         "antwort": "Wir bieten Auswahlbuttons, Textfelder, Zahlenfelder, formatierte Währungsbeträge, Checkboxen, Datei-Uploads, Datumsfelder, E-Mail- und Telefonnummernfelder sowie viele weitere Optionen an."

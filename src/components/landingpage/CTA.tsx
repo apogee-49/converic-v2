@@ -13,7 +13,7 @@ interface CTAProps {
     titel: string;
     buttonText: string;
     buttonUrl: string;
-    bild: string;
+    bild: string | { url: string; meta?: { fileName?: string; size?: number } };
   };
 }
 
@@ -25,7 +25,7 @@ export default function CTA({ data }: CTAProps) {
       <div className="px-6 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-xl text-center">
           {cta.bild && (
-            <Image className='rounded-full mx-auto w-28 h-28' width={200} height={200} alt="profile image" src={cta.bild}></Image>
+            <Image className='rounded-full mx-auto w-28 h-28' width={200} height={200} alt="profile image" src={(cta as any).bild?.url ?? ''}></Image>
           )}
           <p className="mx-auto mt-6 max-w-xl lg:text-lg lg:leading-8 text-gray-500">
             {cta.overtitle}

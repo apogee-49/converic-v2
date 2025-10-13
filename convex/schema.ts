@@ -32,7 +32,9 @@ export default defineSchema({
     size: v.number(),
     isPublic: v.boolean(),
     createdAt: v.number(),
-  }).index("by_userId", ["userId"]),
+  })
+    .index("by_userId", ["userId"])
+    .index("by_userId_and_fileId", ["userId", "fileId"]),
 });
 
 

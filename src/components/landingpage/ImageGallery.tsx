@@ -7,8 +7,8 @@ interface ImageGalleryProps {
   data: {
     titel: string;
     beschreibung: string;
-    elemente: Array<{
-      bild: string;
+    bilder: Array<{
+      bild: string | { url: string; meta?: { fileName?: string; size?: number } };
       titel: string;
       location: string;
       module: string;
@@ -18,9 +18,11 @@ interface ImageGalleryProps {
 
 const ImageGallery = ({ data }: ImageGalleryProps) => {
   const gallery = data ?? {};
-  const imagesAndText = gallery.elemente ?? [];
+  const imagesAndText = gallery.bilder ?? [];
 
-  const [currentImage, setCurrentImage] = useState(imagesAndText[0]?.bild ?? '');
+  const [currentImage, setCurrentImage] = useState(
+    (imagesAndText as any)[0]?.bild?.url ?? ''
+  );
   const [currentText, setCurrentText] = useState(imagesAndText[0]?.titel ?? '');
   const [currentLocation, setCurrentLocation] = useState(imagesAndText[0]?.location ?? '');
   const [currentModule, setCurrentModule] = useState(imagesAndText[0]?.module ?? '');
@@ -107,7 +109,7 @@ const ImageGallery = ({ data }: ImageGalleryProps) => {
               key={index}
               onClick={() =>
                 handleImageChange(
-                  item.bild,
+                  (item as any).bild?.url ?? '',
                   item.titel,
                   item.location,
                   item.module
@@ -117,11 +119,11 @@ const ImageGallery = ({ data }: ImageGalleryProps) => {
             >
               <figure className="cursor-pointer hover:brightness-75 transition-all w-full h-24 shadow rounded overflow-hidden bg-white">
                 <Image
-                  src={item.bild}
+                  src={(item as any).bild?.url ?? ''}
                   width={300}
                   height={140}
                   className={`transition-all w-full h-full object-cover ${
-                    item.bild === currentImage ? "grayscale opacity-40" : ""
+                    ((item as any).bild?.url ?? '') === currentImage ? "grayscale opacity-40" : ""
                   }`}
                   alt={`Thumbnail ${index + 1}`}
                 />

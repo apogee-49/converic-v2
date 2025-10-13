@@ -11,19 +11,26 @@ import { UPLOAD_CONFIG } from "@/lib/config"
 import { useConvex } from "convex/react"
 import { api } from "../../../convex/_generated/api"
 import { useFileUpload, type LocalFile } from "@/hooks/useFileUpload"
+import type { Id } from "../../../convex/_generated/dataModel"
 
 interface FileManagerDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSelectImage?: (url: string) => void
+  onSelectImage?: (
+    url: string,
+    storageId?: string,
+    file?: Pick<FileData, "fileName" | "size">
+  ) => void
   currentImage?: string
 }
 
 interface FileData {
-  name: string
+  fileName: string
   url: string
+  storageId: Id<"_storage">
   isPublic: boolean
   created_at: string
+  size: number
 }
 
 const FileUploadArea = ({ onUploadComplete }: { onUploadComplete: () => Promise<void> }) => {
@@ -133,15 +140,21 @@ const UploadPreviewCard = memo(({ file, onRemove }: { file: LocalFile, onRemove:
   )
 })
 
-const ImageCard = memo(({ file, isSelected, onSelect }: { 
-  file: FileData; isSelected: boolean; onSelect: (url: string) => void 
+const ImageCard = memo(({ file, isSelected, onSelect }: {
+  file: FileData;
+  isSelected: boolean;
+  onSelect: (
+    url: string,
+    storageId: Id<"_storage">,
+    file: Pick<FileData, "fileName" | "size">
+  ) => void;
 }) => (
   <div className={`bg-muted relative flex flex-col rounded-lg p-1.5 ${isSelected ? "ring-2 ring-primary ring-offset-6 bg-primary/10" : ""}`}>
     <div 
       className="bg-accent relative flex flex-col aspect-square items-center justify-center overflow-visible rounded-md cursor-pointer hover:opacity-80 transition-opacity"
-      onClick={() => onSelect(file.url)}
+      onClick={() => onSelect(file.url, file.storageId, file)}
     >
-      <Image src={file.url} alt={file.name} fill className="object-cover rounded-md" unoptimized />
+      <Image src={file.url} alt={file.fileName} fill className="object-cover rounded-md" unoptimized />
     </div>
   </div>
 ))
@@ -169,8 +182,12 @@ export function FileManagerDialog({ open, onOpenChange, onSelectImage, currentIm
     }
   }, [open])
 
-  const handleSelectImage = (url: string) => {
-    onSelectImage?.(url)
+  const handleSelectImage = (
+    url: string,
+    storageId: Id<"_storage">,
+    file: Pick<FileData, "fileName" | "size">
+  ) => {
+    onSelectImage?.(url, storageId, file)
     onOpenChange(false)
   }
 
@@ -208,7 +225,7 @@ export function FileManagerDialog({ open, onOpenChange, onSelectImage, currentIm
             ) : (
               files.map((file) => (
                 <ImageCard
-                  key={file.name}
+                  key={file.storageId}
                   file={file}
                   isSelected={currentImage === file.url}
                   onSelect={handleSelectImage}

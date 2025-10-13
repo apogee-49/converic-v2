@@ -4,7 +4,7 @@ import React from 'react'
 import { cn } from "@/lib/utils";
 import Section from "@/components/ui/section";
 import Marquee from "@/components/ui/marquee";
-import { StarFilledIcon } from "@radix-ui/react-icons";
+import { StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
 import { motion } from 'framer-motion';
 
 export const Highlight = ({
@@ -31,6 +31,7 @@ export interface TestimonialCardProps {
   role: string;
   description: React.ReactNode;
   className?: string;
+  stars?: number;
   [key: string]: any;
 }
 
@@ -59,11 +60,13 @@ export const TestimonialCard = ({
     <div className="select-none mt-2 sm:mt-3">
       {showStars && (
         <div className="flex flex-row py-1">
-          <StarFilledIcon className="size-4 text-yellow-500" />
-          <StarFilledIcon className="size-4 text-yellow-500" />
-          <StarFilledIcon className="size-4 text-yellow-500" />
-          <StarFilledIcon className="size-4 text-yellow-500" />
-          <StarFilledIcon className="size-4 text-yellow-500" />
+          {Array.from({ length: 5 }).map((_, i) => (
+            i < ((props as any).stars ?? 5) ? (
+              <StarFilledIcon key={i} className="size-4 text-yellow-500" />
+            ) : (
+              <StarIcon key={i} className="size-4 text-muted-foreground/40" />
+            )
+          ))}
         </div>
       )}
       <p className="font-medium text-base text-muted-foreground">{name}</p>
@@ -76,10 +79,10 @@ export const TestimonialCard = ({
 interface Testimonial {
   name: string;
   rolle?: string;
-  beschreibung: string;
+  anfang: string;
   highlight?: string;
-  conclusion?: string;
-  stars: number;
+  ende?: string;
+  stars?: number;
   showStars?: boolean;
 }
 
@@ -87,26 +90,26 @@ interface Testimonial {
 interface TestimonialsProps {
   data: {
     titel: string;
-    subtitle: string;
+    overtitle: string;
     sterneAnzeigen: boolean;
     theme?: string;
-    elemente: Testimonial[];
+    bewertungen: Testimonial[];
   };
 }
 
 export function Testimonials({ data }: TestimonialsProps) {
-  const testimonials = data || { elemente: [] };
+  const testimonials = data || { bewertungen: [] };
 
   const renderThemeOne = () => (
     <Section
-      title={testimonials.titel}
-      subtitle={testimonials.subtitle}
+      title={testimonials.overtitle}
+      subtitle={testimonials.titel}
       className="bg-muted"
     >
       <div>
         <div >
           <div className='grid lg:mt-10 mt-6 md:grid-cols-3 px-2 max-w-7xl lg:px-6 mx-auto gap-[15px] lg:gap-[22px]'>
-            {testimonials.elemente.map((testimonial, index) => (
+            {testimonials.bewertungen.map((testimonial, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 50 }}
@@ -117,15 +120,27 @@ export function Testimonials({ data }: TestimonialsProps) {
               >
                 {(testimonials.sterneAnzeigen || testimonial.showStars) && (
                   <ul className='flex gap-0.5'>
-                    {[...Array(testimonial.stars || 5)].map((_, starIndex) => (
+                    {Array.from({ length: 5 }).map((_, starIndex) => (
                       <li key={starIndex}>
-                        <StarFilledIcon className="size-5 text-yellow-500" />
+                        {starIndex < (testimonial.stars ?? 5) ? (
+                          <StarFilledIcon className="size-5 text-yellow-500" />
+                        ) : (
+                          <StarIcon className="size-5 text-muted-foreground/40" />
+                        )}
                       </li>
                     ))}
                   </ul>
                 )}
                 <p className='text-base mb-4 max-w-[335px] font-normal text-muted-foreground'>
-                  {testimonial.beschreibung}
+                  {testimonial.anfang}{" "}
+                  {testimonial.highlight && (
+                    <>
+                      <Highlight>
+                        {testimonial.highlight}
+                      </Highlight>{" "}
+                    </>
+                  )}
+                  {testimonial.ende}
                 </p>
                 <div className='flex flex-col gap-0.5 mt-auto'>
                   <h6 className='text-base font-semibold leading-6 text-foreground'>
@@ -143,8 +158,8 @@ export function Testimonials({ data }: TestimonialsProps) {
 
   const renderThemeTwo = () => (
     <Section
-      title={testimonials.titel}
-      subtitle={testimonials.subtitle}
+      title={testimonials.overtitle}
+      subtitle={testimonials.titel}
     >
       <div data-nosnippet>
         <div className="mx-auto md:container md:px-8">
@@ -154,15 +169,16 @@ export function Testimonials({ data }: TestimonialsProps) {
                 className="mt-6 [--duration:100s] max-h-[40rem] sm:max-h-none"
                 verticalOnSmallScreen={true}
               >
-                {testimonials.elemente.map((testimonial: Testimonial, idx: number) => (
+                {testimonials.bewertungen.map((testimonial: Testimonial, idx: number) => (
                   <TestimonialCard
                     key={idx}
                     name={testimonial.name}
                     role={testimonial.rolle ?? ""}
                     showStars={testimonials.sterneAnzeigen}
+                    stars={testimonial.stars ?? 5}
                     description={
                       <p>
-                        {testimonial.beschreibung}{" "}
+                        {testimonial.anfang}{" "}
                         {testimonial.highlight && (
                           <>
                             <Highlight>
@@ -170,7 +186,7 @@ export function Testimonials({ data }: TestimonialsProps) {
                             </Highlight>{" "}
                           </>
                         )}
-                        {testimonial.conclusion}
+                        {testimonial.ende}
                       </p>
                     }
                   />

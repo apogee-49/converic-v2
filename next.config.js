@@ -9,11 +9,16 @@ const config = {
      poweredByHeader: false,
      images: {
        remotePatterns: [
-         {
-           protocol: 'https',
-           hostname: 'wkiazsrcdyalslpplhzv.supabase.co',
-           pathname: '/storage/v1/object/public/**',
-         },
+        {
+          protocol: 'https',
+          hostname: 'healthy-goldfinch-760.convex.cloud',
+          pathname: '/api/storage/**',
+        },
+        {
+          protocol: 'https',
+          hostname: 'content-guineapig-365.convex.cloud',
+          pathname: '/api/storage/**',
+        },
        ],
      },
 };

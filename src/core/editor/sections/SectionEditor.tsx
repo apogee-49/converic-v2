@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useLayoutEffect, useState, useMemo } from 'react';
 import type { SectionEditorProps } from './types';
 import { PropertyInput } from './PropertyInput';
+import { ButtonGroupField } from './PropertyInput';
 import { Button } from "@/components/ui/button";
 import { SaveIcon, Trash2Icon, Loader } from 'lucide-react';
 import { getSectionName, sortObjectByBaseline } from '@/lib/utils';
@@ -61,27 +62,39 @@ const EditorContent = ({
   sectionId: string;
   sectionType: string;
   onChange: (key: string, value: any, path: string[]) => void;
-}) => (
-  <div className="flex-1 relative border rounded-2xl bg-background">
-    <div className="absolute inset-0 overflow-y-auto px-4 py-6 sm:p-8 gap-x-6 gap-y-8">
-      <div>
-        {Object.entries(sortObjectByBaseline(properties, sectionType))
-          .filter(([key]) => key !== "sectionId")
-          .map(([key, value]) => (
-            <PropertyInput
-              key={`${sectionId}-${key}`}
-              keyName={key}
-              value={value}
-              onChange={onChange}
-              path={[]}
-              sectionId={sectionId}
-            />
-          ))
-        }
+}) => {
+  const hasButtonGroup =
+    Object.prototype.hasOwnProperty.call(properties, 'buttonText') ||
+    Object.prototype.hasOwnProperty.call(properties, 'buttonUrl') ||
+    Object.prototype.hasOwnProperty.call(properties, 'pfeil');
+
+  const sortedEntries = Object.entries(sortObjectByBaseline(properties, sectionType))
+    .filter(([key]) => key !== "sectionId");
+
+  return (
+    <div className="flex-1 relative border rounded-2xl bg-background">
+      <div className="absolute inset-0 overflow-y-auto px-4 py-6 sm:p-8 gap-x-6 gap-y-8">
+        <div className="flex flex-col gap-5">
+          {sortedEntries
+            .filter(([key]) => !(key === 'buttonText' || key === 'buttonUrl' || key === 'pfeil'))
+            .map(([key, value]) => (
+              <PropertyInput
+                key={`${sectionId}-${key}`}
+                keyName={key}
+                value={value}
+                onChange={onChange}
+                path={[]}
+                sectionId={sectionType}
+              />
+            ))}
+          {hasButtonGroup && (
+            <ButtonGroupField value={properties} onChange={onChange} path={[]} />
+          )}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const SectionEditor: React.FC<SectionEditorProps> = ({ 
   activeItem, 
@@ -93,7 +106,7 @@ export const SectionEditor: React.FC<SectionEditorProps> = ({
   const [isSaving, setIsSaving] = useState(false);
 
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (activeItem) {
       const initialProps = { ...activeItem.properties };
       setProperties(initialProps);

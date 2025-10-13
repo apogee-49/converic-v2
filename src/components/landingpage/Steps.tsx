@@ -11,7 +11,7 @@ interface StepsProps {
     overtitle: string;
     titel: string;
     theme: string;
-    elemente: Array<{
+    schritte: Array<{
       title: string;
       beschreibung: string;
       icon: string;
@@ -20,7 +20,7 @@ interface StepsProps {
 }
 
 export default function Steps({ data }: StepsProps) {
-  const steps = data || { elemente: [] };
+  const steps = data || { schritte: [] };
 
   const renderThemeOne = () => (
     <Section
@@ -28,7 +28,7 @@ export default function Steps({ data }: StepsProps) {
       subtitle={steps.titel}
     >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-8 mt-4 sm:mt-10 max-w-7xl mx-auto">
-        {steps.elemente.map((item, index) => {
+        {steps.schritte.map((item, index) => {
           return (
             <BlurFade key={index} delay={0.1 + index * 0.1} inView>
               <Card className="bg-background border-none shadow-none">
@@ -55,7 +55,7 @@ export default function Steps({ data }: StepsProps) {
     >
       <div className="max-w-7xl lg:px-6 px-2 mt-14 mx-auto flex flex-col items-center gap-20">
         <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-6">
-          {steps.elemente.map((item, index) => (
+          {steps.schritte.map((item, index) => (
             <div key={index} className="relative">
               <div className="absolute -top-1.5 -left-1.5 w-full h-full bg-secondary/25 rounded-lg"/>
               <div className="bg-white rounded-lg lg:p-9 p-7 text-center relative h-full">

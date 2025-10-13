@@ -10,7 +10,7 @@ import { Icon, type IconName } from "@/components/ui/icon-picker";
 
 interface BenefitItem { 
   icon: string;
-  caption: string;
+  title: string;
   beschreibung: string;
 }
 
@@ -19,13 +19,13 @@ interface BenefitsProps {
     titel: string;
     inhalt: string;
     buttonText: string;
-    elemente: BenefitItem[];
+    features: BenefitItem[];
   };
 }
 
 export default function Benefits({ data }: BenefitsProps) {
   const ref = useRef(null);
-  const benefits = data || { elemente: [] };
+  const benefits = data || { features: [] };
   
   return (
     <section
@@ -37,7 +37,7 @@ export default function Benefits({ data }: BenefitsProps) {
       </p>
 
       <div className="grid md:grid-cols-2 max-w-7xl lg:px-10 mx-auto gap-[15px] lg:gap-[22px] ">
-        {benefits.elemente.map((item: BenefitItem) => {
+        {benefits.features.map((item: BenefitItem) => {
           return (
             <motion.div
               ref={ref}
@@ -45,7 +45,7 @@ export default function Benefits({ data }: BenefitsProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              key={item.caption}
+              key={item.title}
               className="bg-white rounded-lg lg:p-9 p-7 text-start flex flex-col "
             >
               <div className="flex mb-4">
@@ -53,7 +53,7 @@ export default function Benefits({ data }: BenefitsProps) {
                   <Icon name={item.icon as IconName} className="w-6 h-6 text-secondary" />
                 </div>
                 <span className="self-center font-semibold text-lg lg:text-xl ml-3">
-                  {item.caption}
+                  {item.title}
                 </span>
               </div>
               <div className="text-muted-foreground text-base">{parse(item.beschreibung)}</div>

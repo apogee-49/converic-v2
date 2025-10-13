@@ -8,7 +8,7 @@ import { Phone } from "lucide-react"
 // Typdefinition für Props
 interface HeaderProps {
   data: {
-    logo: string;
+    logo: string | { url: string; meta?: { fileName?: string; size?: number } };
     tel: string;
     name: string;
   };
@@ -23,7 +23,7 @@ export default function Header({ data }: HeaderProps) {
 
         <Link href="/">
           <Image 
-            src={header.logo} 
+            src={(header as any).logo?.url ?? ''} 
             width={130} 
             height={32} 
             alt={`${header.name} Logo`}

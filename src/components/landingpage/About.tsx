@@ -10,7 +10,7 @@ import { Icon, type IconName } from '@/components/ui/icon-picker'
 
 interface Feature {
   icon: string;
-  name: string;
+  title: string;
   beschreibung: string;
 }
 
@@ -20,14 +20,25 @@ interface AboutProps {
     titel: string;
     inhalt: string;
     buttonText: string;
-    bild: string;
+    bild: string | { url: string; meta?: { fileName?: string; size?: number }; visible?: "desktop" | "both" };
     reversed: boolean;
-    elemente: Feature[];
+    bulletpoints: Feature[];
   };
 }
 
 export default function About({ data }: AboutProps) {
-  const about = data || { elemente: [] };
+  const about = data || { bulletpoints: [] };
+
+  const visibleSetting: "desktop" | "both" | undefined =
+    about.bild && typeof about.bild === 'object' && (about as any).bild?.visible
+      ? (about as any).bild?.visible
+      : undefined;
+
+  const visibilityClass = !visibleSetting
+    ? ''
+    : visibleSetting === 'desktop'
+      ? 'hidden sm:block'
+      : '';
 
   return (
     <div className="overflow-hidden bg-background lg:py-24 py-20 sm:py-32" id="about">
@@ -41,13 +52,13 @@ export default function About({ data }: AboutProps) {
                 {about.inhalt}
               </p>
               <ul role="list" className="mt-8 space-y-8 text-muted-foreground">
-                {about.elemente.map((feature) => (
-                  <li key={feature.name} className="flex gap-x-3 items-center">
+                {about.bulletpoints.map((feature) => (
+                  <li key={feature.title} className="flex gap-x-3 items-center">
                     <span className="h-5 w-5 my-auto flex-none text-secondary">
                       <Icon name={feature.icon as IconName} className="w-5 h-5" />
                     </span>
                     <span>
-                      <strong className="font-semibold text-foreground">{feature.name}</strong> {feature.beschreibung}
+                      <strong className="font-semibold text-foreground">{feature.title}</strong> {feature.beschreibung}
                     </span>
                   </li>
                 ))}
@@ -67,11 +78,11 @@ export default function About({ data }: AboutProps) {
               </div>
             </div>
           </div>
-          <div className={about.reversed ? 'flex items-start justify-start lg:order-last' : 'flex items-start justify-end lg:order-first'}>
+          <div className={`${about.reversed ? 'flex items-start justify-start lg:order-last' : 'flex items-start justify-end lg:order-first'} ${visibilityClass}`}>
             <Image
-              src={about.bild}
+              src={(about as any).bild?.url ?? ''}
               alt="Product screenshot"
-              className="w-[24rem] hidden sm:block max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]"
+              className="w-[24rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]"
               width={2432}
               height={1442}
             />

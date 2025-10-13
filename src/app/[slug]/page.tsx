@@ -109,7 +109,8 @@ export default async function Page({ params }: { params?: ParamsSource }) {
   return (
     <main>
       {data.sections.map((section: any) => {
-        const SectionComponent = components[section.type] ?? null;
+        const baseType = typeof section.type === 'string' ? section.type.split('-')[0] : '';
+        const SectionComponent = components[baseType] ?? null;
         return (
           <section key={section._id}>
             {SectionComponent ? (

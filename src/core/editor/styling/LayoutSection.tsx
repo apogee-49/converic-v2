@@ -79,7 +79,7 @@ export function LayoutSection({ settings, setSettings, isLoading, onSave, isSavi
                   )}
                 </div>
               </div>
-              <div className="border border-border bg-muted rounded-xl overflow-hidden">
+              <div className="border border-border bg-muted rounded-lg overflow-hidden">
                 <FaviconPlaceholder faviconUrl={settings.layout.favicon} />
               </div>
             </div>
@@ -90,7 +90,7 @@ export function LayoutSection({ settings, setSettings, isLoading, onSave, isSavi
       <FileManagerDialog
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
-        onSelectImage={handleFileSelect}
+        onSelectImage={(url: string) => handleFileSelect(url)}
         currentImage={settings.layout.favicon}
       />
 

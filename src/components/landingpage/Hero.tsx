@@ -23,11 +23,12 @@ interface HeroProps {
   data: {
     overtitle: string;
     titel: string;
-    inhalt: Array<{
+    bulletpoints: Array<{
       stichpunkt: string;
     }>;
     buttonText: string;
-    bild: string;
+    buttonUrl: string;
+    bild: string | { url: string; meta?: { fileName?: string; size?: number }; visible?: "desktop" | "both" };
     theme?: string;
     pfeil?: boolean;
   };
@@ -37,9 +38,18 @@ export default function Hero({ data }: HeroProps) {
   const hero = data || {};
 
   // Fallback image
-  const imageUrl = hero.bild?.startsWith('http')
-    ? hero.bild
-    : '/Hero-Image.png';
+  const imageUrl = hero.bild && typeof (hero.bild as any).url === 'string' ? (hero.bild as any).url : '/Hero-Image.png';
+
+  const visibleSetting: "desktop" | "both" | undefined =
+    hero.bild && typeof hero.bild === 'object' && (hero.bild as any).visible
+      ? (hero.bild as any).visible
+      : undefined;
+
+  const visibilityClass = !visibleSetting
+    ? ''
+    : visibleSetting === 'desktop'
+      ? 'hidden sm:block'
+      : '';
 
 
 
@@ -74,7 +84,7 @@ export default function Hero({ data }: HeroProps) {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="mt-6 space-y-3"
             >
-              {hero.inhalt?.map((item, index) => (
+              {hero.bulletpoints?.map((item, index) => (
                 <li key={index} className="flex items-center text-muted-foreground gap-3">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#6a7190" className="size-6">
                     <path fillRule="evenodd" d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
@@ -90,7 +100,7 @@ export default function Hero({ data }: HeroProps) {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="mt-10 flex items-center gap-x-6"
             >
-              <Link href="#form">
+              <Link href={hero.buttonUrl}>
                 <Button
                   variant="default"
                   isLanding={true}
@@ -106,7 +116,7 @@ export default function Hero({ data }: HeroProps) {
             </motion.div>
           </div>
         </div>
-        <div className="relative lg:col-span-5 lg:-mr-8 xl:absolute xl:inset-0 xl:left-1/2 xl:mr-0">
+        <div className={`relative lg:col-span-5 lg:-mr-8 xl:absolute xl:inset-0 xl:left-1/2 xl:mr-0 ${visibilityClass}`}>
           <Image
             className="aspect-[1/1] w-full bg-gray-50 object-cover lg:absolute lg:inset-0 lg:aspect-auto lg:h-full"
             src={imageUrl}
@@ -136,7 +146,7 @@ export default function Hero({ data }: HeroProps) {
           animate="animate"
           className="flex lg:flex-nowrap flex-wrap xl:gap-28 gap-20"
         >
-          <div className="xl:w-6/12 lg:w-1/2 w-full my-auto lg:order-1 order-2">
+          <div className={`xl:w-6/12 lg:w-1/2 w-full my-auto lg:order-1 order-2 ${visibilityClass}`}>
             <div className="text-center md:mx-0 relative aspect-[7/5] h-full my-auto">
               <Image
                 src={imageUrl}
@@ -176,7 +186,7 @@ export default function Hero({ data }: HeroProps) {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="mt-6 text-md"
               >
-                {hero.inhalt?.map((item, index) => (
+                {hero.bulletpoints?.map((item, index) => (
                   <li key={index} className="flex mb-3">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="w-6 mr-3 flex-shrink-0 fill-white">
                       <path fillRule="evenodd" clipRule="evenodd" d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" />
@@ -192,7 +202,7 @@ export default function Hero({ data }: HeroProps) {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="mt-10 flex items-center gap-x-4"
               >
-                <Link href="#form">
+                <Link href={hero.buttonUrl}>
                   <Button
                     variant="default"
                     isLanding={true}
@@ -211,7 +221,7 @@ export default function Hero({ data }: HeroProps) {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <Link href="#form" className="relative bg-[#383B51] overflow-hidden w-16 h-16 rounded-full border-2 ring-[#1e2032] ring-[8px] border-none flex items-center justify-center">
+            <Link href={hero.buttonUrl} className="relative bg-[#383B51] overflow-hidden w-16 h-16 rounded-full border-2 ring-[#1e2032] ring-[8px] border-none flex items-center justify-center">
               <motion.div
                 animate={{ 
                   y: [-44, 44],
