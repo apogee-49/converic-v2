@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -83,7 +84,7 @@ const ImageField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
           onClick={handleChange}
         >
           {imageUrl ? (
-            <img src={imageUrl} alt="Bild Vorschau" className="w-full h-full object-cover" />
+              <Image src={imageUrl} alt="Bild Vorschau" className="w-full h-full object-cover" width={152} height={152} />
           ) : (
             <div className="w-full h-full" />
           )}
@@ -94,7 +95,7 @@ const ImageField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
             <div className="inline-block rounded-md bg-muted w-fit px-4 py-2 text-sm font-medium">
               {fileName || "Kein Bild ausgewählt"}
               {fileMeta && (
-                <span className="text-muted-foreground ml-2 font-normal">
+                <span className="text-muted-foreground ml-2 text-xs font-medium">
                   {fileSizeLabel}
                 </span>
               )}

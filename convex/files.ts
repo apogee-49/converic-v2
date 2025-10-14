@@ -57,28 +57,21 @@ export const listUserFiles = query({
       .order("desc")
       .collect();
 
-    const result: Array<{
-      fileName: string;
-      url: string;
-      storageId: typeof rows[number]["fileId"];
-      isPublic: boolean;
-      created_at: string;
-      size: number;
-    }> = [];
-
-    for (const row of rows) {
+    const filePromises = rows.map(async (row) => {
       const url = await ctx.storage.getUrl(row.fileId);
-      if (!url) continue;
-      result.push({
+      if (!url) return null;
+
+      return {
         fileName: row.fileName,
         url,
         storageId: row.fileId,
         isPublic: row.isPublic,
         created_at: new Date(row.createdAt).toISOString(),
         size: row.size,
-      });
-    }
+      };
+    });
 
-    return result;
+    const results = await Promise.all(filePromises);
+    return results.filter((result) => result !== null);
   },
 });
