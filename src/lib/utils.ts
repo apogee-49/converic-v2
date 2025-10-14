@@ -21,6 +21,7 @@ export const tv = createTV({
 export const formatCamelCase = (str: string): string => {
   return str
     .replace(/([A-Z])/g, ' $1')
+    .replace(/([0-9])/g, ' $1')
     .replace(/^./, str => str.toUpperCase())
     .trim();
 };

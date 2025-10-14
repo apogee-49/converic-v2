@@ -94,7 +94,6 @@ export default async function Page({ params }: { params?: ParamsSource }) {
   if (!data) return notFound();
 
   const components: Record<string, React.ComponentType<any>> = {
-    header: Header,
     hero: Hero,
     steps: Steps,
     benefits: Benefits,
@@ -106,22 +105,34 @@ export default async function Page({ params }: { params?: ParamsSource }) {
     trust: Trust,
   };
 
+  const headerSection = data.sections.find((section: any) =>
+    typeof section.type === 'string' && section.type.startsWith('header')
+  );
+  const otherSections = data.sections.filter((section: any) =>
+    !(typeof section.type === 'string' && section.type.startsWith('header'))
+  );
+
   return (
-    <main>
-      {data.sections.map((section: any) => {
-        const baseType = typeof section.type === 'string' ? section.type.split('-')[0] : '';
-        const SectionComponent = components[baseType] ?? null;
-        return (
-          <section key={section._id}>
-            {SectionComponent ? (
-              <SectionComponent data={section.content} />
-            ) : (
-              <pre>{JSON.stringify(section.content, null, 2)}</pre>
-            )}
-          </section>
-        );
-      })}
-    </main>
+    <>
+      {headerSection && (
+        <Header data={headerSection.content} />
+      )}
+      <main>
+        {otherSections.map((section: any) => {
+          const baseType = typeof section.type === 'string' ? section.type.split('-')[0] : '';
+          const SectionComponent = components[baseType] ?? null;
+          return (
+            <section key={section._id}>
+              {SectionComponent ? (
+                <SectionComponent data={section.content} />
+              ) : (
+                <pre>{JSON.stringify(section.content, null, 2)}</pre>
+              )}
+            </section>
+          );
+        })}
+      </main>
+    </>
   );
 }
 

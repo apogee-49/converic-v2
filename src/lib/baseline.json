@@ -1,8 +1,17 @@
 {
   "header": {
-    "logo": "/logo.svg",
-    "tel": "0151 53570907",
-    "name": "Beratung vereinbaren"
+    "sticky": false,
+    "logo": {
+      "url": "https://healthy-goldfinch-760.convex.cloud/api/storage/3e09e9a6-46d2-45dd-8c7d-220669bfb9f3",
+      "meta": { "fileName": "logo.svg", "size": 245678 }
+    },
+    "imageSize": "32px",
+    "buttonText1": "Beratung vereinbaren",
+    "buttonText2": "0151 53570907",
+    "link": "tel:0151 53570907",
+    "buttonIcon": "phone",
+    "topPadding": "14px",
+    "bottomPadding": "14px"
   },
   "hero": {
     "theme": "theme-1",

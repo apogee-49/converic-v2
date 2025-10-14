@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatCamelCase, formatBytes } from "@/lib/utils";
 import baseline from "@/lib/baseline.json";
 import type { PropertyInputProps } from "./types";
-import { PlusCircle, Trash2Icon, ImageIcon, Upload, ExternalLinkIcon, MonitorSmartphoneIcon, MonitorIcon, ChartNoAxesGantt, MousePointerClickIcon, PaintbrushIcon, GripVerticalIcon, ChevronRightIcon, InfoIcon, ListCheckIcon } from "lucide-react";
+import { PlusCircle, Trash2Icon, ImageIcon, Upload, ExternalLinkIcon, UnfoldVertical, MonitorSmartphoneIcon, MonitorIcon, ChartNoAxesGantt, MousePointerClickIcon, PaintbrushIcon, GripVerticalIcon, ChevronRightIcon, InfoIcon, ListCheckIcon } from "lucide-react";
 import { Rating, RatingButton } from "@/components/ui/rating";
 import { IconPicker, Icon, type IconName } from "@/components/ui/icon-picker";
 import { FileManagerDialog } from "@/components/dialog/file-manager";
@@ -20,20 +20,30 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import { useState, useEffect, type ReactNode } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 
-type FieldType = 'image' | 'theme' | 'beschreibung' | 'buttonUrl' | 'boolean' | 'array' | 'object' | 'text' | 'icon' | 'rating';
+type FieldType = 'image' | 'theme' | 'beschreibung' | 'buttonUrl' | 'link' | 'boolean' | 'array' | 'object' | 'text' | 'icon' | 'rating' | 'color' | 'padding' | 'pixel';
 
-const BUTTON_KEYS = ["buttonText", "buttonUrl", "pfeil"] as const;
+const BUTTON_KEYS = ["buttonText", "buttonText1", "buttonText2", "buttonUrl", "pfeil", "buttonIcon"] as const;
 const isButtonKey = (k: string) => (BUTTON_KEYS as readonly string[]).includes(k);
+
+const PADDING_KEYS = ["topPadding", "bottomPadding"] as const;
+const isPaddingKey = (k: string) => (PADDING_KEYS as readonly string[]).includes(k);
 
 const FIELD_KEY_TO_TYPE: Record<string, FieldType> = {
   bild: 'image',
+  logo: 'image',
   theme: 'theme',
   beschreibung: 'beschreibung',
   inhalt: 'beschreibung',
   buttonurl: 'buttonUrl',
+  link: 'link',
   icon: 'icon',
+  buttonicon: 'icon',
   stars: 'rating',
+  toppadding: 'padding',
+  bottompadding: 'padding',
+  imagesize: 'pixel',
 };
 
 const getFieldType = (keyName: string, value: any): FieldType => {
@@ -44,6 +54,8 @@ const getFieldType = (keyName: string, value: any): FieldType => {
   if (value !== null && typeof value === 'object') return 'object';
   return 'text';
 };
+
+
 
 const ImageField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
   const imageUrl: string = value?.url ?? "";
@@ -75,23 +87,33 @@ const ImageField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
     <div className={`flex flex-col ${isInArray ? "" : "border-t pt-6 mt-3"} gap-4`}>
       {!isInArray && (
         <Label className="text-md font-medium text-foreground flex items-center gap-2 -mb-1">
-          <ImageIcon className="w-4 h-4" /> Bild
+          <ImageIcon className="w-4 h-4" /> {keyName === 'logo' ? 'Logo' : 'Bild'}
         </Label>
       )}
       <div className="flex items-start gap-6">
         <div
-          className="w-38 h-38 rounded-lg bg-muted border-2 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-90"
+          className="w-38 h-38 rounded-lg bg-background border-2 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-90"
           onClick={handleChange}
         >
           {imageUrl ? (
-              <Image src={imageUrl} alt="Bild Vorschau" className="w-full h-full object-cover" width={152} height={152} />
+              <Image 
+                src={imageUrl} 
+                alt="Bild Vorschau" 
+                className="w-full h-full object-cover"
+                style={{
+                  objectFit: (fileName?.endsWith('.svg') ?? fileName?.endsWith('.ico')) ? 'contain' : 'cover',
+                  margin: (fileName?.endsWith('.svg') ?? fileName?.endsWith('.ico')) ? '1rem' : '0'
+                }}
+                width={152} 
+                height={152} 
+                unoptimized 
+              />
           ) : (
             <div className="w-full h-full" />
           )}
         </div>
         <div className="flex-1 flex flex-col gap-3 justify-center my-auto">
           <div className="text-sm flex flex-col gap-2">
-            <div className="text-muted-foreground font-medium text-xs">Ausgewählt:</div>
             <div className="inline-block rounded-md bg-muted w-fit px-4 py-2 text-sm font-medium">
               {fileName || "Kein Bild ausgewählt"}
               {fileMeta && (
@@ -103,9 +125,9 @@ const ImageField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
           </div>
           <div className="flex flex-col gap-2">
           <div className="text-muted-foreground font-medium text-xs">Optionen:</div>
-            <div className="flex flex-wrap gap-2.5 items-center">
+            <div className="flex flex-wrap gap-2 items-center">
               <Button variant="outline" size="sm" onClick={handleChange} className="gap-2">
-                <Upload className="w-4 h-4 text-foreground" />Bild hochladen
+                <Upload className="w-4 h-4 text-foreground" />Bild ändern
               </Button>
               {typeof visibleValue !== "undefined" && (
                 <div className="flex items-center gap-2">
@@ -116,7 +138,7 @@ const ImageField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
                       onChange(keyName, next, path);
                     }}
                   >
-                    <SelectTrigger size="default" className="w-fit cursor-pointer shadow-none">
+                    <SelectTrigger size="default" className="w-fit cursor-pointer shadow-none font-medium">
                       <SelectValue placeholder="Sichtbarkeit" />
                     </SelectTrigger>
                     <SelectContent>
@@ -131,7 +153,7 @@ const ImageField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
               {imageUrl && (
                 <>
                   <Button variant="outline" size="sm" onClick={handleOpenInNewTab} className="gap-2 xl:flex hidden">
-                    <ExternalLinkIcon className="w-4 h-4 text-foreground" /> Öffnen
+                    <ExternalLinkIcon className="w-4 h-4 text-foreground" />Link
                   </Button>
                 </>
               )}
@@ -157,6 +179,48 @@ const ImageField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
     </div>
   );
 };
+const PixelField = (props: PropertyInputProps) => {
+  const { keyName, value, onChange, path } = props;
+  const lower = keyName.toLowerCase();
+  const max = lower === 'imagesize' ? 100 : (lower === 'toppadding' || lower === 'bottompadding') ? 50 : 100;
+  const min = 0;
+  const numeric = typeof value === 'number' ? value : parseInt(String(value ?? 0).replace(/[^\d-]/g, ''), 10) || 0;
+  const set = (n: number) => onChange(keyName, `${Math.max(min, Math.min(max, Math.round(n)))}px`, path);
+  return (
+    <div className="flex flex-col gap-3">
+      <Label>{keyName.toLowerCase() === 'imagesize' ? 'Logo Größe' : formatCamelCase(keyName)}</Label>
+      <div className="flex items-center gap-2">
+        <Slider className="w-42 mr-1" value={[numeric]} min={min} max={max} onValueChange={(vals) => set(vals[0] ?? 0)} />
+        <Input type="text" value={numeric} onChange={(e) => set(Number(e.target.value))} className="h-8 px-2 w-11" />
+        <span className="text-xs text-muted-foreground">px</span>
+      </div>
+    </div>
+  );
+};
+
+export const PaddingGroupField = ({ value, onChange, path }: { value: Record<string, any>; onChange: PropertyInputProps["onChange"]; path: string[]; }) => {
+  const hasTop = Object.prototype.hasOwnProperty.call(value, "topPadding");
+  const hasBottom = Object.prototype.hasOwnProperty.call(value, "bottomPadding");
+  if (![hasTop, hasBottom].some(Boolean)) return null;
+
+  return (
+    <div className="flex flex-col border-t pt-6 mt-3 gap-5">
+      <Label className="text-md font-medium text-foreground flex items-center gap-2">
+        <UnfoldVertical className="w-4 h-4" />
+        Padding
+      </Label>
+      <div className="flex flex-col gap-4">
+        {hasTop && (
+          <PixelField keyName="topPadding" value={value.topPadding} onChange={onChange} path={path} />
+        )}
+        {hasBottom && (
+          <PixelField keyName="bottomPadding" value={value.bottomPadding} onChange={onChange} path={path} />
+        )}
+      </div>
+    </div>
+  );
+};
+
 
 const ThemeField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
   const themes = [
@@ -215,10 +279,15 @@ const RatingField = ({ keyName, value, onChange, path }: PropertyInputProps) => 
   );
 };
 
-const TextField = ({ keyName, value, onChange, path, isMultiline = false, isButtonUrl = false }: PropertyInputProps & { isMultiline?: boolean, isButtonUrl?: boolean }) => {
+const TextField = ({ keyName, value, onChange, path, isMultiline = false, isButtonUrl = false, isLink = false }: PropertyInputProps & { isMultiline?: boolean, isButtonUrl?: boolean, isLink?: boolean }) => {
   return (
     <div className="flex flex-col gap-2">
-      <Label className="block text-sm font-medium">{isButtonUrl ? 'Button Link' : formatCamelCase(keyName)}</Label>
+      <Label className="block text-sm font-medium">
+        {keyName === 'buttonText' ? 'Text' : 
+         keyName === 'buttonText1' ? 'Text 1' : 
+         keyName === 'buttonText2' ? 'Text 2' : 
+         isButtonUrl || isLink ? 'Link' : formatCamelCase(keyName)}
+      </Label>
       {isMultiline ? (
         <Textarea
           value={value}
@@ -235,7 +304,13 @@ const TextField = ({ keyName, value, onChange, path, isMultiline = false, isButt
       {isButtonUrl && (
         <div className="text-xs text-muted-foreground flex items-center gap-1">
           <InfoIcon className="w-3.5 h-3.5" />
-          Um zurück zum Funnel zu kommen geben Sie #form ein
+          Um zurück zum Funnel zu kommen geben Sie <span className="bg-muted border rounded-sm px-1">#form</span> ein.
+        </div>
+      )}
+      {isLink && (
+        <div className="text-xs text-muted-foreground flex items-center gap-1">
+          <InfoIcon className="w-3.5 h-3.5" />
+          Um eine Telefonnummer zu verlinken geben Sie <span className="bg-muted border rounded-sm px-1">tel:</span> ein.
         </div>
       )}
     </div>
@@ -243,9 +318,13 @@ const TextField = ({ keyName, value, onChange, path, isMultiline = false, isButt
 };
 
 export const ButtonGroupField = ({ value, onChange, path }: { value: Record<string, any>; onChange: PropertyInputProps["onChange"]; path: string[]; }) => {
-  const hasButtonText = Object.prototype.hasOwnProperty.call(value, "buttonText");
+  const hasButtonText = Object.prototype.hasOwnProperty.call(value, "buttonText")
+    || Object.prototype.hasOwnProperty.call(value, "buttonText1")
+    || Object.prototype.hasOwnProperty.call(value, "buttonText2");
   const hasButtonUrl = Object.prototype.hasOwnProperty.call(value, "buttonUrl");
   const hasPfeil = Object.prototype.hasOwnProperty.call(value, "pfeil");
+  const hasButtonIcon = Object.prototype.hasOwnProperty.call(value, "buttonIcon");
+  const hasLink = Object.prototype.hasOwnProperty.call(value, "link");
 
   if (![hasButtonText, hasButtonUrl, hasPfeil].some(Boolean)) return null;
 
@@ -256,14 +335,15 @@ export const ButtonGroupField = ({ value, onChange, path }: { value: Record<stri
         Button
       </Label>
       <div className="flex flex-col gap-5">
-        {hasButtonText && (
+        {Object.entries(value).filter(([k]) => ["buttonText", "buttonText1", "buttonText2"].includes(k)).map(([k]) => (
           <TextField
-            keyName="buttonText"
-            value={value.buttonText}
+            key={k}
+            keyName={k}
+            value={value[k]}
             onChange={onChange}
             path={path}
           />
-        )}
+        ))}
         {hasButtonUrl && (
           <TextField
             keyName="buttonUrl"
@@ -272,6 +352,34 @@ export const ButtonGroupField = ({ value, onChange, path }: { value: Record<stri
             path={path}
             isButtonUrl={true}
           />
+        )}
+        {hasLink && (
+          <TextField
+            keyName="link"
+            value={value.link}
+            onChange={onChange}
+            path={path}
+            isLink={true}
+          />
+        )}
+        {hasButtonIcon && (
+          <div className="flex flex-col gap-2">
+            <Label className="text-sm font-medium">Icon</Label>
+            <div className="flex items-center gap-2">
+              <IconPicker
+                value={value.buttonIcon as IconName}
+                onValueChange={(icon) => onChange("buttonIcon", icon, path)}
+                triggerPlaceholder="Icon auswählen"
+              >
+                <Button variant="outline" size="sm" className="gap-2">
+                  {value.buttonIcon && (
+                    <Icon name={value.buttonIcon as IconName} className="w-4 h-4" />
+                  )}
+                  {value.buttonIcon ? String(value.buttonIcon) : "Icon auswählen"}
+                </Button>
+              </IconPicker>
+            </div>
+          </div>
         )}
         {hasPfeil && (
           <BooleanField
@@ -293,7 +401,7 @@ const ObjectField = ({ keyName, value, path, onChange, sectionId }: PropertyInpu
       <Label className="text-sm font-semibold">{formatCamelCase(keyName)}</Label>
       <div className="pl-2">
         {Object.entries(value)
-          .filter(([k]) => !isButtonKey(k))
+          .filter(([k]) => !isButtonKey(k) && !isPaddingKey(k))
           .map(([k, v]) => (
             <PropertyInput
               key={k}
@@ -305,6 +413,7 @@ const ObjectField = ({ keyName, value, path, onChange, sectionId }: PropertyInpu
             />
           ))}
         <ButtonGroupField value={value as Record<string, any>} onChange={onChange} path={objectPath} />
+        <PaddingGroupField value={value as Record<string, any>} onChange={onChange} path={objectPath} />
       </div>
     </div>
   );
@@ -336,6 +445,8 @@ const IconField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
     </div>
   );
 };
+
+
 
 const SortableArrayItem = ({ 
   id,
@@ -591,7 +702,7 @@ const ArrayField = ({ keyName, value, path, onChange, sectionId }: PropertyInput
 };
 
 export const PropertyInput = (props: PropertyInputProps) => {
-  const { keyName, value } = props;
+  const { keyName, value, onChange, path } = props;
   const fieldType = getFieldType(keyName, value);
   
   switch (fieldType) {
@@ -601,6 +712,8 @@ export const PropertyInput = (props: PropertyInputProps) => {
       return <ThemeField {...props} />;
     case 'icon':
       return <IconField {...props} />;
+    case 'pixel': 
+      return <PixelField {...props} />;
     case 'boolean':
       return <BooleanField {...props} />;
     case 'array':

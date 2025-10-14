@@ -1,8 +1,8 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  PanelTopCloseIcon, CaptionsIcon, LayoutList, ListOrderedIcon,
+  PanelTopCloseIcon, LayoutList, ListOrderedIcon, Heading1Icon,
   GalleryHorizontalEndIcon, LetterTextIcon, MessageCircleQuestionIcon,
-  StarIcon, Filter, MousePointerClickIcon, MessageSquareQuote,
+  StarIcon, Filter, MousePointerClickIcon, MessageSquareQuote
 } from "lucide-react";
 
 export type SectionDef = {
@@ -22,7 +22,7 @@ export const sectionCategories: Record<string, Category> = {
     title: "Struktur",
     sections: [
       { id: "header", name: "Kopfzeile", icon: PanelTopCloseIcon, unique: true },
-      { id: "hero", name: "Hero", icon: CaptionsIcon, unique: true },
+      { id: "hero", name: "Hero", icon: Heading1Icon, unique: true },
     ],
   },
   CONTENT: {
@@ -56,7 +56,7 @@ export const sectionCategories: Record<string, Category> = {
 export const UPLOAD_CONFIG = {
   maxSizeMB: 5,
   maxFiles: 3,
-  allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif', 'ico'] as const,
+  allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif', 'ico', 'svg'] as const,
   allowedMimeTypes: [
     'image/jpeg', 
     'image/png', 
@@ -65,7 +65,8 @@ export const UPLOAD_CONFIG = {
     'image/avif',
     'image/x-icon',
     'image/vnd.microsoft.icon',
-    'image/ico'
+    'image/ico',
+    'image/svg+xml'
   ] as const,
   bucketName: 'user-images' as const,
   

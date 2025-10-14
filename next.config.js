@@ -8,6 +8,7 @@ import "./src/env.js";
 const config = {
      poweredByHeader: false,
      images: {
+      dangerouslyAllowSVG: true,
        remotePatterns: [
         {
           protocol: 'https',
