@@ -38,8 +38,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu className="flex flex-row gap-2.5 items-center">
           <SidebarMenuItem>
-            <Link href="#" className="flex flex-row gap-2.5 items-center">
-              <Image className="w-11" src="/converic.svg" alt="Converic Logo" width={200} height={50} />
+            <Link href="/" className="flex flex-row gap-2.5 items-center">
+              <Image priority className="w-11" src="/converic.svg" alt="Converic Logo" width={200} height={50} />
             </Link>
           </SidebarMenuItem>
         </SidebarMenu>

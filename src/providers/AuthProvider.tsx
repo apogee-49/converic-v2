@@ -8,6 +8,29 @@ import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import type { Id } from "@/../convex/_generated/dataModel"
 
+interface HeaderState {
+  basePathLabel?: string
+  pageId?: Id<"landingPages"> | undefined
+  pageTitle?: string | undefined
+  onBack?: (() => void) | undefined
+}
+
+type HeaderContextValue = {
+  header: HeaderState
+  updateHeader: (partial: Partial<HeaderState>) => void
+  resetHeader: () => void
+}
+
+const HeaderContext = React.createContext<HeaderContextValue | null>(null)
+
+export function useHeader(): HeaderContextValue {
+  const ctx = React.useContext(HeaderContext)
+  if (!ctx) {
+    throw new Error("useHeader must be used within AuthProvider")
+  }
+  return ctx
+}
+
 interface AuthProviderProps {
   children?: React.ReactNode
   headerBasePathLabel?: string
@@ -16,9 +39,29 @@ interface AuthProviderProps {
   headerOnBack?: (() => void) | undefined
 }
 
-export default function AuthProvider({ children, headerBasePathLabel, headerPageId, headerPageTitle, headerOnBack }: AuthProviderProps) {
+export default function AuthProvider({ children, headerBasePathLabel = "Dashboard", headerPageId, headerPageTitle, headerOnBack }: AuthProviderProps) {
+  const [header, setHeader] = React.useState<HeaderState>({
+    basePathLabel: headerBasePathLabel,
+    pageId: headerPageId,
+    pageTitle: headerPageTitle,
+    onBack: headerOnBack,
+  })
+
+  const updateHeader = React.useCallback((partial: Partial<HeaderState>) => {
+    setHeader((prev) => ({ ...prev, ...partial }))
+  }, [])
+
+  const resetHeader = React.useCallback(() => {
+    setHeader({ basePathLabel: undefined, pageId: undefined, pageTitle: undefined, onBack: undefined })
+  }, [])
+
+  const headerContextValue: HeaderContextValue = React.useMemo(
+    () => ({ header, updateHeader, resetHeader }),
+    [header, updateHeader, resetHeader]
+  )
+
   return (
-    <>
+    <HeaderContext.Provider value={headerContextValue}>
       <Authenticated>
         <SidebarProvider
           style={
@@ -31,10 +74,10 @@ export default function AuthProvider({ children, headerBasePathLabel, headerPage
           <AppSidebar variant="inset"/>
           <SidebarInset>
             <SiteHeader
-              basePathLabel={headerBasePathLabel}
-              pageId={headerPageId}
-              pageTitle={headerPageTitle}
-              onBack={headerOnBack}
+              basePathLabel={header.basePathLabel}
+              pageId={header.pageId}
+              pageTitle={header.pageTitle}
+              onBack={header.onBack}
             />
             <div className="flex flex-1 flex-col">
               <div className="@container/main flex flex-1 flex-col gap-2">
@@ -49,7 +92,7 @@ export default function AuthProvider({ children, headerBasePathLabel, headerPage
           <SignInButton />
         </div>
       </Unauthenticated>
-    </>
+    </HeaderContext.Provider>
   )
 }
 

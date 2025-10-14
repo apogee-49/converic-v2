@@ -4,6 +4,7 @@ import { type Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs'
 import ConvexClientProvider from '@/providers/ConvexClientProvider'
+import AuthProvider from "@/providers/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,9 @@ export default function RootLayout({
       <body>
         <ClerkProvider>
           <ConvexClientProvider>
+            <AuthProvider>
             {children}
+            </AuthProvider>
           </ConvexClientProvider>
         </ClerkProvider>
       </body>
