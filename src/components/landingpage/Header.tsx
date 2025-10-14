@@ -27,7 +27,7 @@ export default function Header({ data }: HeaderProps) {
   const ensurePx = (value: string | number | undefined): string | undefined => {
     if (value === undefined) return undefined;
     if (typeof value === 'number') return `${value}px`;
-    return /px$/.test(value) ? value : `${value}px`;
+    return value.endsWith('px') ? value : `${value}px`;
   };
 
   const parsePxNumber = (value: string | number | undefined, fallback: number): number => {
