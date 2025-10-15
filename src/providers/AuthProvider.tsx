@@ -1,12 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { Authenticated, Unauthenticated } from "convex/react"
+import { Authenticated, AuthLoading, Unauthenticated } from "convex/react"
 import { SignInButton } from "@clerk/nextjs"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import type { Id } from "@/../convex/_generated/dataModel"
+import { usePathname } from "next/navigation"
 
 interface HeaderState {
   basePathLabel?: string
@@ -40,12 +41,32 @@ interface AuthProviderProps {
 }
 
 export default function AuthProvider({ children, headerBasePathLabel = "Dashboard", headerPageId, headerPageTitle, headerOnBack }: AuthProviderProps) {
+  const pathname = usePathname()
+  // Public slug pages: exactly one non-reserved top-level segment
+  const pn = pathname ?? "/"
+  const qIdx = pn.indexOf("?")
+  const pathNoQuery = qIdx === -1 ? pn : pn.slice(0, qIdx)
+  const pathSegments = pathNoQuery.split('/').filter(Boolean)
+  const reservedTopLevel = new Set(["pages", "assets", "leads", "statistiken", "api", "trpc", "revalidate"])
+  const isPublicSlug = pathSegments.length === 1 && !reservedTopLevel.has(pathSegments[0] ?? "")
+
+  if (isPublicSlug) {
+    // Bypass sidebar/header and auth wrappers on public slug routes
+    return <>{children}</>
+  }
+  const initPath = (pathname ?? "/")
+  let initBaseLabel = headerBasePathLabel
+  if (initPath.startsWith("/pages")) initBaseLabel = "Landingpages"
+  else if (initPath.startsWith("/assets")) initBaseLabel = "Assets"
+  else if (initPath.startsWith("/leads")) initBaseLabel = "Leads"
+  else if (initPath.startsWith("/statistiken")) initBaseLabel = "Statistiken"
+
   const [header, setHeader] = React.useState<HeaderState>({
-    basePathLabel: headerBasePathLabel,
+    basePathLabel: initBaseLabel,
     pageId: headerPageId,
     pageTitle: headerPageTitle,
     onBack: headerOnBack,
-  })
+  }) 
 
   const updateHeader = React.useCallback((partial: Partial<HeaderState>) => {
     setHeader((prev) => ({ ...prev, ...partial }))
@@ -59,6 +80,23 @@ export default function AuthProvider({ children, headerBasePathLabel = "Dashboar
     () => ({ header, updateHeader, resetHeader }),
     [header, updateHeader, resetHeader]
   )
+
+  React.useEffect(() => {
+    const currentPath = ((pathname ?? "/").split("?")[0]) ?? "/"
+    let baseLabel = "Dashboard"
+    if (currentPath.startsWith("/pages")) baseLabel = "Landingpages"
+    else if (currentPath.startsWith("/assets")) baseLabel = "Assets"
+    else if (currentPath.startsWith("/leads")) baseLabel = "Leads"
+    else if (currentPath.startsWith("/statistiken")) baseLabel = "Statistiken"
+
+    setHeader((prev) => ({
+      ...prev,
+      basePathLabel: baseLabel,
+      ...(currentPath.startsWith("/pages")
+        ? {}
+        : { pageId: undefined, pageTitle: undefined, onBack: undefined }),
+    }))
+  }, [pathname])
 
   return (
     <HeaderContext.Provider value={headerContextValue}>
@@ -92,6 +130,9 @@ export default function AuthProvider({ children, headerBasePathLabel = "Dashboar
           <SignInButton />
         </div>
       </Unauthenticated>
+      <AuthLoading>
+        <p>Still loading</p>
+      </AuthLoading>
     </HeaderContext.Provider>
   )
 }

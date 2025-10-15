@@ -10,11 +10,16 @@ import Editor from "@/components/common/pages/editor"
 export default function Page() {
   const [selected, setSelected] = React.useState<Id<"landingPages"> | null>(null)
   const { updateHeader } = useHeader()
-  
+
+  const handleBack = React.useCallback(() => {
+    setSelected(null)
+    updateHeader({ pageId: undefined, pageTitle: undefined, onBack: undefined })
+  }, [updateHeader])
+
   const onSelect = React.useCallback((id: Id<"landingPages">) => {
     setSelected(id)
-    updateHeader({ pageId: id, onBack: () => setSelected(null) })
-  }, [updateHeader])
+    updateHeader({ pageId: id, onBack: handleBack })
+  }, [updateHeader, handleBack])
 
   if (selected === null) {
     return <PagesList onSelect={onSelect} />
