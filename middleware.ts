@@ -1,29 +1,65 @@
 import { clerkMiddleware } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
+import { Redis } from '@upstash/redis';
 
 export default clerkMiddleware(async (auth, req) => {
+  const host = req.headers.get('host')?.toLowerCase() ?? '';
   const pathname = req.nextUrl.pathname;
-  const segments = pathname.split('/').filter(Boolean);
 
-  // Allow exactly one non-reserved top-level segment (public slug pages)
-  const reservedTopLevel = new Set([
-    'pages',
-    'assets',
-    'leads',
-    'statistiken',
-    'api',
-    'revalidate',
-  ]);
 
-  const isSingleTopLevel = segments.length === 1;
-  const first = segments[0];
-  const isReserved = first ? reservedTopLevel.has(first) : false;
-  const isPublicSlug = isSingleTopLevel && !!first && !isReserved;
+  const appHost = new URL(process.env.NEXT_PUBLIC_SITE_URL!).hostname;
+  const pagesBaseHost = 'converic.page';
 
+
+  const isLocal = host.startsWith('localhost')
+  const isVercel = host.endsWith('.vercel.app');
+  const isApp = host === appHost;
+  const isSlugSubdomain = host.endsWith(`.${pagesBaseHost}`);
+
+
+  // slug.converic.page
+  if (isSlugSubdomain && pathname === '/') {
+    const sub = host.slice(0, -(`.${pagesBaseHost}`).length);
+    if (sub && sub !== 'www') {
+      return NextResponse.rewrite(new URL(`/${sub}`, req.url));
+    }
+  }
+
+
+  // Custom-Domain
+  if (!isLocal && !isVercel && !isApp && !isSlugSubdomain && pathname === '/') {
+    const upstashUrl = process.env.DOMAIN_KV_REST_API_URL;
+    const token = process.env.DOMAIN_KV_REST_API_READ_ONLY_TOKEN;
+
+    if (upstashUrl && token) {
+      const redis = new Redis({ url: upstashUrl, token });
+      const candidates: Array<string> = host.startsWith('www.') ? [host, host.slice(4)] : [host];
+
+      let slug: string | null = null;
+      for (const h of candidates) {
+        slug = await redis.get<string>(`domain:${h}`);
+        if (slug) break;
+      }
+      if (slug && /^[a-z0-9-]+$/i.test(slug)) {
+        return NextResponse.rewrite(new URL(`/${slug}`, req.url));
+      }
+    }
+  }
+
+
+  // Auth
+  const [top, ...rest] = req.nextUrl.pathname.split('/').filter(Boolean);
+
+  if (top === 'api') return;
+
+  const protectedTopLevels = new Set(['pages', 'assets', 'leads', 'statistiken']);
+  const isPublicSlug = !!top && rest.length === 0 && !protectedTopLevels.has(top);
   if (isPublicSlug) return;
 
   const session = await auth();
   if (!session.userId) return session.redirectToSignIn();
 });
+
 
 export const config = {
   matcher: [
@@ -31,5 +67,3 @@ export const config = {
     '/(api|trpc)(.*)',
   ],
 };
-
-

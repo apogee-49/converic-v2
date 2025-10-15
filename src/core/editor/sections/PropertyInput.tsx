@@ -92,7 +92,7 @@ const ImageField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
       )}
       <div className="flex items-start gap-6">
         <div
-          className="w-38 h-38 rounded-lg bg-background border-2 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-90"
+          className="w-38 h-38 rounded-lg bg-background border-1 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-90"
           onClick={handleChange}
         >
           {imageUrl ? (
@@ -114,6 +114,7 @@ const ImageField = ({ keyName, value, onChange, path }: PropertyInputProps) => {
         </div>
         <div className="flex-1 flex flex-col gap-3 justify-center my-auto">
           <div className="text-sm flex flex-col gap-2">
+            <div className="text-muted-foreground font-medium text-xs">Ausgewählt:</div>
             <div className="inline-block rounded-md bg-muted w-fit px-4 py-2 text-sm font-medium">
               {fileName || "Kein Bild ausgewählt"}
               {fileMeta && (

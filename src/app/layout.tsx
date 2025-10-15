@@ -1,33 +1,20 @@
-import "../styles/globals.css";
 
+import "../styles/globals.css";
 import { type Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ClerkProvider } from '@clerk/nextjs'
-import ConvexClientProvider from '@/providers/ConvexClientProvider'
-import AuthProvider from "@/providers/AuthProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], display: "swap" });
 
+//meta wahrscheinich auch seperieren
 export const metadata: Metadata = {
-  title: "Converic | Dashboard",
+  title: "Converic",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.className}`} suppressHydrationWarning>
-      <body>
-        <ClerkProvider>
-          <ConvexClientProvider>
-            <AuthProvider>
-            {children}
-            </AuthProvider>
-          </ConvexClientProvider>
-        </ClerkProvider>
-      </body>
+    <html lang="de" className={inter.className} suppressHydrationWarning>
+      <body>{children}</body>
     </html>
   );
 }

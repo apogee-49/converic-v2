@@ -4,7 +4,7 @@ export const revalidate = false;
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { ConvexHttpClient } from 'convex/browser';
-import { api } from '../../../convex/_generated/api';
+import { api } from '../../../../convex/_generated/api';
 import Hero from '@/components/landingpage/Hero';
 import Header from '@/components/landingpage/Header';
 import Steps from '@/components/landingpage/Steps';
