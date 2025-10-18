@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Authenticated } from "convex/react"
+import { Authenticated, Unauthenticated, AuthLoading } from "convex/react"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
@@ -111,6 +111,12 @@ export default function AuthProvider({
           </SidebarInset>
         </SidebarProvider>
       </Authenticated>
+      <Unauthenticated>
+        <div>Unauthenticated</div>
+      </Unauthenticated>
+      <AuthLoading>
+        <div>Loading</div>
+      </AuthLoading>
     </HeaderContext.Provider>
   )
 }

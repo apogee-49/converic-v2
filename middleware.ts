@@ -2,6 +2,7 @@ import { clerkMiddleware } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
 
+
 export default clerkMiddleware(async (auth, req) => {
   const host = req.headers.get('host')?.toLowerCase() ?? '';
   const pathname = req.nextUrl.pathname;
@@ -58,6 +59,16 @@ export default clerkMiddleware(async (auth, req) => {
 
   const session = await auth();
   if (!session.userId) return session.redirectToSignIn();
+}, (req) => {
+  const primaryHost = new URL(process.env.NEXT_PUBLIC_SITE_URL!).hostname;
+  const isSatellite = req.nextUrl.hostname !== primaryHost;
+
+  return {
+    isSatellite,
+    domain: primaryHost,
+    signInUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/sign-in`,
+    signUpUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/sign-up`,
+  };
 });
 
 
