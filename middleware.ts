@@ -1,6 +1,14 @@
-import { clerkMiddleware } from '@clerk/nextjs/server';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
+
+// Geschützte Dashboard-Routen explizit matchen
+const isProtected = createRouteMatcher([
+  '/pages(.*)',
+  '/assets(.*)',
+  '/leads(.*)',
+  '/statistiken(.*)',
+]);
 
 
 export default clerkMiddleware(async (auth, req) => {
@@ -49,16 +57,14 @@ export default clerkMiddleware(async (auth, req) => {
 
 
   // Auth
-  const [top, ...rest] = req.nextUrl.pathname.split('/').filter(Boolean);
+  const [top] = req.nextUrl.pathname.split('/').filter(Boolean);
 
   if (top === 'api') return;
 
-  const protectedTopLevels = new Set(['pages', 'assets', 'leads', 'statistiken']);
-  const isPublicSlug = !!top && rest.length === 0 && !protectedTopLevels.has(top);
-  if (isPublicSlug) return;
-
-  const session = await auth();
-  if (!session.userId) return session.redirectToSignIn();
+  if (req.nextUrl.hostname === appHost && isProtected(req)) {
+    const session = await auth();
+    if (!session.userId) return session.redirectToSignIn();
+  }
 }, (req) => {
   const primaryHost = new URL(process.env.NEXT_PUBLIC_SITE_URL!).hostname;
   const isSatellite = req.nextUrl.hostname !== primaryHost;
@@ -68,6 +74,7 @@ export default clerkMiddleware(async (auth, req) => {
     domain: primaryHost,
     signInUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/sign-in`,
     signUpUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/sign-up`,
+    debug: process.env.NODE_ENV === 'development',
   };
 });
 
