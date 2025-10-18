@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Authenticated, Unauthenticated, AuthLoading } from "convex/react"
+import { RedirectToSignIn } from "@clerk/nextjs"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
@@ -112,10 +113,12 @@ export default function AuthProvider({
         </SidebarProvider>
       </Authenticated>
       <Unauthenticated>
-        <div>Unauthenticated</div>
+        <RedirectToSignIn />
       </Unauthenticated>
       <AuthLoading>
-        <div>Loading</div>
+        <div className="flex flex-1 items-center justify-center h-full">
+          Loading
+        </div>
       </AuthLoading>
     </HeaderContext.Provider>
   )
